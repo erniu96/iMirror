@@ -37,19 +37,21 @@ else
     readonly PORTABLE_BUILD=false
 fi
 readonly TARGET_ARCH="$(uname -m)"
-readonly SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
+SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
+readonly SDK_PATH
 
 if [[ -n "${IMIRROR_OPENSSL_PREFIX:-}" ]]; then
-    readonly OPENSSL_PREFIX="$IMIRROR_OPENSSL_PREFIX"
+    OPENSSL_PREFIX="$IMIRROR_OPENSSL_PREFIX"
 elif [[ "$PORTABLE_BUILD" == true ]]; then
-    readonly OPENSSL_PREFIX="$($PROJECT_DIR/Scripts/prepare-openssl.sh "$MINIMUM_MACOS" "$TARGET_ARCH")"
+    OPENSSL_PREFIX="$("$PROJECT_DIR/Scripts/prepare-openssl.sh" "$MINIMUM_MACOS" "$TARGET_ARCH")"
 else
     if ! command -v brew >/dev/null 2>&1; then
         print -u2 "缺少 Homebrew。请先安装 openssl@3。"
         exit 1
     fi
-    readonly OPENSSL_PREFIX="$(brew --prefix openssl@3)"
+    OPENSSL_PREFIX="$(brew --prefix openssl@3)"
 fi
+readonly OPENSSL_PREFIX
 readonly LIBCRYPTO="$OPENSSL_PREFIX/lib/libcrypto.3.dylib"
 if [[ ! -f "$LIBCRYPTO" ]]; then
     print -u2 "找不到 $LIBCRYPTO"
@@ -165,7 +167,7 @@ codesign --verify --deep --strict "$APP_BUNDLE"
 print "构建完成：$APP_BUNDLE"
 
 if [[ "$ACTION" == "test" ]]; then
-    IMIRROR_OPENSSL_PREFIX="$OPENSSL_PREFIX" "$PROJECT_DIR/Scripts/test-protocol.sh"
+    IMIRROR_OPENSSL_PREFIX="$OPENSSL_PREFIX" "$PROJECT_DIR/Scripts/test-protocol.sh" || exit $?
     xcrun swiftc \
         -swift-version 5 \
         -target "$TARGET_ARCH-apple-macosx$MINIMUM_MACOS" \
@@ -178,7 +180,7 @@ if [[ "$ACTION" == "test" ]]; then
         "$PROJECT_DIR/Tests/UnitTests.swift" \
         -framework CoreGraphics \
         -o "$BUILD_DIR/iMirrorTests"
-    "$BUILD_DIR/iMirrorTests"
+    "$BUILD_DIR/iMirrorTests" || exit $?
 
     readonly VIDEO_FIXTURE="${IMIRROR_VIDEO_FIXTURE:-$PROJECT_DIR/Tests/Fixtures/blue-640x480.h264}"
     if [[ ! -f "$VIDEO_FIXTURE" ]]; then
@@ -198,7 +200,7 @@ if [[ "$ACTION" == "test" ]]; then
         -framework CoreVideo \
         -framework CoreMedia \
         -o "$BUILD_DIR/iMirrorVideoTests"
-    "$BUILD_DIR/iMirrorVideoTests" "$VIDEO_FIXTURE"
+    "$BUILD_DIR/iMirrorVideoTests" "$VIDEO_FIXTURE" || exit $?
 fi
 
 if [[ "$ACTION" == "run" ]]; then
