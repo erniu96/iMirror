@@ -24,8 +24,10 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 ```bash
 brew install openssl@3
 ./build.sh test
-./build.sh run
+bash command.txt
 ```
+
+`bash command.txt` 会构建并启动菜单栏应用，可从任意工作目录调用。iMirror 仅支持 macOS；在 Linux 或 Windows 上运行时会明确提示并退出。
 
 给其他系统版本分发时，显式指定最低版本：
 

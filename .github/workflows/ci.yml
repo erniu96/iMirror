@@ -43,7 +43,7 @@ jobs:
         run: brew list openssl@3 >/dev/null 2>&1 || brew install openssl@3
       - name: Check shell scripts
         run: |
-          for script in build.sh Scripts/*.sh; do
+          for script in command.txt build.sh Scripts/*.sh; do
             case "$(head -n 1 "$script")" in
               *zsh*) zsh -n "$script" ;;
               *bash*) bash -n "$script" ;;

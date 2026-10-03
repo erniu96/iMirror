@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+    printf 'iMirror 是 macOS 应用，请在 Mac 上运行 bash command.txt。\n' >&2
+    exit 1
+fi
+
+exec zsh "$PROJECT_DIR/build.sh" run
