@@ -80,7 +80,7 @@ for source in "${c_sources[@]}"; do
         -I"$PROJECT_DIR/AirPlay/plist" \
         -I"$OPENSSL_PREFIX/include" \
         -DOPENSSL_API_COMPAT=0x10101000L \
-        -O2 -Wall -Wno-deprecated-declarations -Wno-format \
+        -O2 -fno-strict-aliasing -Wall -Wno-deprecated-declarations -Wno-format \
         -c "$source" -o "$object_path"
     c_objects+=("$object_path")
 done
