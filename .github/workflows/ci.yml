@@ -1,0 +1,68 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  protocol:
+    name: C protocol tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Install test dependencies
+        run: sudo apt-get update && sudo apt-get install -y libssl-dev
+      - run: ./Scripts/test-protocol.sh
+
+  macos:
+    name: macOS (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    env:
+      IMIRROR_ALLOW_SOFTWARE_DECODER: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Install OpenSSL
+        run: brew list openssl@3 >/dev/null 2>&1 || brew install openssl@3
+      - name: Check shell scripts
+        run: |
+          for script in build.sh Scripts/*.sh; do
+            case "$(head -n 1 "$script")" in
+              *zsh*) zsh -n "$script" ;;
+              *bash*) bash -n "$script" ;;
+              *) sh -n "$script" ;;
+            esac
+          done
+      - name: Build, verify signing, and run all tests
+        run: ./build.sh test
+
+  portable:
+    name: macOS 14 deployment build
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      IMIRROR_MINIMUM_MACOS: "14.0"
+      IMIRROR_ALLOW_SOFTWARE_DECODER: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Build OpenSSL from verified source and run all tests
+        run: ./build.sh test

@@ -1,0 +1,8 @@
+.DS_Store
+._*
+__MACOSX/
+/build/
+/dist/
+/.build/
+/.dependencies/
+*.xcuserstate
