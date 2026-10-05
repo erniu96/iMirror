@@ -17,7 +17,19 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 - 睡眠时停止网络服务，唤醒后自动恢复。
 - Developer ID 签名、公证和 zip 分发脚本。
 
-## 安装
+## 下载安装（无需编译）
+
+从 [Releases](https://github.com/erniu96/iMirror/releases) 下载最新的 `iMirror-<版本>-macOS-universal.zip`，同时支持 Apple Silicon 和 Intel Mac。解压后把 `iMirror.app` 拖到“应用程序”文件夹。
+
+发布版使用 ad-hoc 签名，没有经过 Apple 公证，首次打开会被 Gatekeeper 拦截，任选一种方式放行：
+
+- **macOS 15 及以上**：先双击打开一次，在提示中点“完成”；然后到“系统设置 → 隐私与安全性”底部点“仍要打开”，输入密码确认。
+- **macOS 14**：按住 Control 点按（或右键）iMirror，选“打开”，再点“打开”。
+- **终端（所有版本）**：`xattr -dr com.apple.quarantine /Applications/iMirror.app`。提示“已损坏，无法打开”时也用这条命令。
+
+放行后即可正常双击打开。首次启动请允许 iMirror 访问本地网络。
+
+## 从源码安装
 
 要求 macOS 14 或更高版本和 Xcode Command Line Tools，不需要 Homebrew。没有安装 Command Line Tools 时先运行 `xcode-select --install`。
 
@@ -43,6 +55,10 @@ bash command.txt
 应用产物为 `build/iMirror.app`。本地构建使用 ad-hoc 签名，每次重新构建签名都会变化，系统可能再次询问本地网络或防火墙权限，属于正常现象。给朋友分发前必须按 [分发文档](Documentation/DISTRIBUTION.md) 完成 Developer ID 签名和公证。
 
 应用图标的源文件是 `Resources/AppIcon.svg`。修改后运行 `node Scripts/make-app-icon.mjs` 重新生成 `Resources/AppIcon.icns`（需要 Node 和 Playwright Chromium），并一起提交。
+
+## 发布
+
+推送与 `Info.plist` 中 `CFBundleShortVersionString` 一致的标签（例如 `v1.0.0`）后，`.github/workflows/release.yml` 会在 Apple Silicon 和 Intel 上分别构建并运行全部测试，合并成 universal 应用，以 ad-hoc 签名打包，连同 SHA-256 校验文件发布到 GitHub Release，说明文字取自 `.github/release-notes.md`。需要正式签名和公证的版本请按 [分发文档](Documentation/DISTRIBUTION.md) 在本机打包。
 
 ## 测试
 
