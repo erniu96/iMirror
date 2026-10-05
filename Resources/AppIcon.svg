@@ -2,64 +2,80 @@
   <defs>
     <rect id="body" x="100" y="100" width="824" height="824" rx="185"/>
     <clipPath id="bodyClip"><use href="#body"/></clipPath>
-    <linearGradient id="bg" x1="0.2" y1="0" x2="0.8" y2="1">
-      <stop offset="0" stop-color="#A6EA6E"/>
-      <stop offset="0.55" stop-color="#4CCB72"/>
-      <stop offset="1" stop-color="#1FA37A"/>
+    <linearGradient id="bg" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#2C6B5A"/>
+      <stop offset="0.5" stop-color="#14443A"/>
+      <stop offset="1" stop-color="#0A2823"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0.3" cy="0.1" r="0.7">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.4"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    <radialGradient id="aura" cx="0.62" cy="0.42" r="0.55">
+      <stop offset="0" stop-color="#5EE6B0" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#5EE6B0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="frame" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D9E6E0"/>
+    </linearGradient>
+    <linearGradient id="stand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A9C2B8"/>
+      <stop offset="1" stop-color="#E4EEEA"/>
+    </linearGradient>
+    <linearGradient id="scr" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#155446"/>
+      <stop offset="1" stop-color="#0B2E28"/>
+    </linearGradient>
+    <radialGradient id="orb" cx="0.4" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#F2FFF9"/>
+      <stop offset="0.45" stop-color="#8DF0C8"/>
+      <stop offset="1" stop-color="#22A97F"/>
     </radialGradient>
     <filter id="iconShadow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
       <feOffset dy="12"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+      <feComponentTransfer><feFuncA type="linear" slope="0.35"/></feComponentTransfer>
       <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <filter id="aurora" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="18"/></filter>
   </defs>
 
   <g filter="url(#iconShadow)"><use href="#body" fill="url(#bg)"/></g>
   <g clip-path="url(#bodyClip)">
-    <use href="#body" fill="url(#glow)"/>
-    <path transform="translate(205,235) scale(2.4)" d="M0,-10 C1.5,-2 2,-1.5 10,0 C2,1.5 1.5,2 0,10 C-1.5,2 -2,1.5 -10,0 C-2,-1.5 -1.5,-2 0,-10 Z" fill="#FFFFFF" fill-opacity="0.9"/>
-    <path transform="translate(850,700) scale(1.8)" d="M0,-10 C1.5,-2 2,-1.5 10,0 C2,1.5 1.5,2 0,10 C-1.5,2 -2,1.5 -10,0 C-2,-1.5 -1.5,-2 0,-10 Z" fill="#FFFFFF" fill-opacity="0.75"/>
-    <path transform="translate(800,190) scale(1.3)" d="M0,-10 C1.5,-2 2,-1.5 10,0 C2,1.5 1.5,2 0,10 C-1.5,2 -2,1.5 -10,0 C-2,-1.5 -1.5,-2 0,-10 Z" fill="#FFFFFF" fill-opacity="0.7"/>
-    <circle cx="170" cy="330" r="9" fill="#FFFFFF" fill-opacity="0.6"/>
-    <circle cx="860" cy="560" r="7" fill="#FFFFFF" fill-opacity="0.55"/>
-
-    <!-- flat cartoon shadows -->
-    <g fill="#0E5A3E" fill-opacity="0.28">
-      <rect x="312" y="266" width="500" height="340" rx="44"/>
-      <rect x="474" y="660" width="176" height="34" rx="17"/>
-      <rect x="226" y="416" width="200" height="390" rx="52"/>
-    </g>
+    <use href="#body" fill="url(#aura)"/>
+    <use href="#body" fill="url(#sheen)"/>
 
     <!-- Mac display -->
-    <path d="M516,580 L590,580 L608,662 L498,662 Z" fill="#E9F3EE" stroke="#1F4A36" stroke-width="14" stroke-linejoin="round"/>
-    <rect x="462" y="648" width="182" height="34" rx="17" fill="#FFFFFF" stroke="#1F4A36" stroke-width="14"/>
-    <rect x="300" y="250" width="500" height="340" rx="44" fill="#FFFFFF" stroke="#1F4A36" stroke-width="14"/>
-    <clipPath id="screenClip"><rect x="326" y="276" width="448" height="288" rx="22"/></clipPath>
-    <g clip-path="url(#screenClip)"><svg x="326" y="276" width="448" height="288" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="#D6F4FF"/>
-<circle cx="50" cy="118" r="52" fill="#9BE07F"/>
-<circle cx="66" cy="27" r="6" fill="#FFD84D"/>
-<circle cx="40" cy="46" r="4.6" fill="#1F4A36"/><circle cx="60" cy="46" r="4.6" fill="#1F4A36"/>
-<circle cx="41.4" cy="44.4" r="1.4" fill="#FFFFFF"/><circle cx="61.4" cy="44.4" r="1.4" fill="#FFFFFF"/>
-<circle cx="33" cy="56" r="4.2" fill="#FF8FA3" fill-opacity="0.75"/><circle cx="67" cy="56" r="4.2" fill="#FF8FA3" fill-opacity="0.75"/>
-<path d="M42,55 Q50,63.5 58,55" fill="none" stroke="#1F4A36" stroke-width="3.4" stroke-linecap="round"/></svg></g>
-    <rect x="326" y="276" width="448" height="288" rx="22" fill="none" stroke="#1F4A36" stroke-width="6"/>
+    <rect x="300" y="250" width="500" height="340" rx="36" fill="#03140F" fill-opacity="0.5" filter="url(#soft)" transform="translate(0,22)"/>
+    <path d="M524,588 L582,588 L596,652 L510,652 Z" fill="url(#stand)"/>
+    <rect x="476" y="646" width="154" height="16" rx="8" fill="#E4EEEA"/>
+    <rect x="300" y="250" width="500" height="340" rx="36" fill="url(#frame)"/>
+    <clipPath id="screenClip"><rect x="316" y="266" width="468" height="308" rx="22"/></clipPath>
+    <g clip-path="url(#screenClip)"><svg x="316" y="266" width="468" height="308" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="url(#scr)"/>
+<g filter="url(#aurora)">
+<ellipse cx="22" cy="78" rx="46" ry="26" fill="#1FAE80" fill-opacity="0.9"/>
+<ellipse cx="80" cy="26" rx="34" ry="20" fill="#BDF5DA" fill-opacity="0.75"/>
+<ellipse cx="62" cy="64" rx="26" ry="14" fill="#E8D9A8" fill-opacity="0.45"/>
+</g>
+<path d="M-5,72 C20,52 45,50 62,40 C78,31 92,30 105,26" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.1"/>
+<path d="M-5,80 C22,62 48,60 66,49 C80,41 94,40 105,37" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="0.9"/></svg></g>
 
     <!-- iPhone -->
-    <rect x="214" y="400" width="200" height="390" rx="52" fill="#FFFFFF" stroke="#1F4A36" stroke-width="14"/>
-    <clipPath id="phoneClip"><rect x="234" y="420" width="160" height="350" rx="34"/></clipPath>
-    <g clip-path="url(#phoneClip)"><svg x="234" y="420" width="160" height="350" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="#D6F4FF"/>
-<circle cx="50" cy="118" r="52" fill="#9BE07F"/>
-<circle cx="66" cy="27" r="6" fill="#FFD84D"/>
-<circle cx="40" cy="46" r="4.6" fill="#1F4A36"/><circle cx="60" cy="46" r="4.6" fill="#1F4A36"/>
-<circle cx="41.4" cy="44.4" r="1.4" fill="#FFFFFF"/><circle cx="61.4" cy="44.4" r="1.4" fill="#FFFFFF"/>
-<circle cx="33" cy="56" r="4.2" fill="#FF8FA3" fill-opacity="0.75"/><circle cx="67" cy="56" r="4.2" fill="#FF8FA3" fill-opacity="0.75"/>
-<path d="M42,55 Q50,63.5 58,55" fill="none" stroke="#1F4A36" stroke-width="3.4" stroke-linecap="round"/></svg></g>
-    <rect x="234" y="420" width="160" height="350" rx="34" fill="none" stroke="#1F4A36" stroke-width="6"/>
-    <rect x="286" y="434" width="56" height="18" rx="9" fill="#1F4A36"/>
+    <rect x="214" y="400" width="200" height="390" rx="48" fill="#03140F" fill-opacity="0.55" filter="url(#soft)" transform="translate(8,22)"/>
+    <rect x="214" y="400" width="200" height="390" rx="48" fill="url(#frame)"/>
+    <clipPath id="phoneClip"><rect x="226" y="412" width="176" height="366" rx="37"/></clipPath>
+    <g clip-path="url(#phoneClip)"><svg x="226" y="412" width="176" height="366" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="url(#scr)"/>
+<g filter="url(#aurora)">
+<ellipse cx="22" cy="78" rx="46" ry="26" fill="#1FAE80" fill-opacity="0.9"/>
+<ellipse cx="80" cy="26" rx="34" ry="20" fill="#BDF5DA" fill-opacity="0.75"/>
+<ellipse cx="62" cy="64" rx="26" ry="14" fill="#E8D9A8" fill-opacity="0.45"/>
+</g>
+<path d="M-5,72 C20,52 45,50 62,40 C78,31 92,30 105,26" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.1"/>
+<path d="M-5,80 C22,62 48,60 66,49 C80,41 94,40 105,37" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-width="0.9"/></svg></g>
+    <rect x="287" y="425" width="54" height="16" rx="8" fill="#04110D"/>
+
+    <use href="#body" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="3"/>
   </g>
 </svg>
