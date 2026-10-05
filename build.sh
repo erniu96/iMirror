@@ -22,6 +22,10 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
     print -u2 "iMirror 需要 macOS 和 Xcode Command Line Tools。"
     exit 1
 fi
+if ! xcode-select -p >/dev/null 2>&1; then
+    print -u2 "缺少 Xcode Command Line Tools。请运行 xcode-select --install，安装完成后重试。"
+    exit 1
+fi
 
 readonly APP_NAME="iMirror"
 readonly APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
@@ -29,27 +33,17 @@ readonly CONTENTS="$APP_BUNDLE/Contents"
 readonly MACOS_DIR="$CONTENTS/MacOS"
 readonly RESOURCES_DIR="$CONTENTS/Resources"
 readonly FRAMEWORKS_DIR="$CONTENTS/Frameworks"
-if [[ -n "${IMIRROR_MINIMUM_MACOS:-}" ]]; then
-    readonly MINIMUM_MACOS="$IMIRROR_MINIMUM_MACOS"
-    readonly PORTABLE_BUILD=true
-else
-    readonly MINIMUM_MACOS="$(sw_vers -productVersion | cut -d. -f1).0"
-    readonly PORTABLE_BUILD=false
-fi
+# Default to the oldest supported system so a local build also runs on other Macs
+# and reuses one OpenSSL build regardless of the host macOS version.
+readonly MINIMUM_MACOS="${IMIRROR_MINIMUM_MACOS:-14.0}"
 readonly TARGET_ARCH="$(uname -m)"
 SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
 readonly SDK_PATH
 
 if [[ -n "${IMIRROR_OPENSSL_PREFIX:-}" ]]; then
     OPENSSL_PREFIX="$IMIRROR_OPENSSL_PREFIX"
-elif [[ "$PORTABLE_BUILD" == true ]]; then
-    OPENSSL_PREFIX="$("$PROJECT_DIR/Scripts/prepare-openssl.sh" "$MINIMUM_MACOS" "$TARGET_ARCH")"
 else
-    if ! command -v brew >/dev/null 2>&1; then
-        print -u2 "缺少 Homebrew。请先安装 openssl@3。"
-        exit 1
-    fi
-    OPENSSL_PREFIX="$(brew --prefix openssl@3)"
+    OPENSSL_PREFIX="$("$PROJECT_DIR/Scripts/prepare-openssl.sh" "$MINIMUM_MACOS" "$TARGET_ARCH")"
 fi
 readonly OPENSSL_PREFIX
 readonly LIBCRYPTO="$OPENSSL_PREFIX/lib/libcrypto.3.dylib"
@@ -147,10 +141,15 @@ xcrun swiftc \
     -lobjc -lc++
 
 readonly LIBCRYPTO_NAME="${LIBCRYPTO:t}"
+# The executable records libcrypto's install name, which can differ from the
+# path passed to the linker (for example a symlinked prefix).
+LIBCRYPTO_INSTALL_NAME="$(otool -D "$LIBCRYPTO" | tail -n 1)"
+readonly LIBCRYPTO_INSTALL_NAME
 cp "$LIBCRYPTO" "$FRAMEWORKS_DIR/$LIBCRYPTO_NAME"
 chmod 644 "$FRAMEWORKS_DIR/$LIBCRYPTO_NAME"
+install_name_tool -id "@rpath/$LIBCRYPTO_NAME" "$FRAMEWORKS_DIR/$LIBCRYPTO_NAME"
 install_name_tool \
-    -change "$LIBCRYPTO" \
+    -change "$LIBCRYPTO_INSTALL_NAME" \
     "@executable_path/../Frameworks/$LIBCRYPTO_NAME" \
     "$MACOS_DIR/$APP_NAME"
 
@@ -163,6 +162,10 @@ else
     codesign --force --timestamp --options runtime --sign "$SIGN_IDENTITY" "$APP_BUNDLE"
 fi
 codesign --verify --deep --strict "$APP_BUNDLE"
+if otool -L "$MACOS_DIR/$APP_NAME" | tail -n +2 | grep -F -- "$OPENSSL_PREFIX" >/dev/null; then
+    print -u2 "应用仍引用构建机上的 OpenSSL：$OPENSSL_PREFIX"
+    exit 1
+fi
 
 print "构建完成：$APP_BUNDLE"
 

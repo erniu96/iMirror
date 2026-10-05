@@ -11,6 +11,8 @@ readonly PREFIX="$DEPENDENCIES_DIR/openssl-$VERSION-macos-$MINIMUM_MACOS-$TARGET
 readonly ARCHIVE="$DEPENDENCIES_DIR/openssl-$VERSION.tar.gz"
 readonly SOURCE_DIR="$DEPENDENCIES_DIR/openssl-$VERSION-macos-$MINIMUM_MACOS-$TARGET_ARCH-source"
 readonly LIBCRYPTO="$PREFIX/lib/libcrypto.3.dylib"
+# A mirror can be used when GitHub is slow; the SHA-256 check below still applies.
+readonly SOURCE_URL="${IMIRROR_OPENSSL_URL:-https://github.com/openssl/openssl/releases/download/openssl-$VERSION/openssl-$VERSION.tar.gz}"
 
 if [[ -f "$LIBCRYPTO" ]]; then
     print "$PREFIX"
@@ -38,12 +40,20 @@ if [[ ! -x "$CC" ]]; then
     exit 1
 fi
 
+if ! command -v perl >/dev/null 2>&1; then
+    print -u2 "编译 OpenSSL 需要 perl，但系统中找不到。"
+    exit 1
+fi
+
 mkdir -p "$DEPENDENCIES_DIR"
 if [[ ! -f "$ARCHIVE" ]]; then
     print -u2 "首次构建：下载 OpenSSL $VERSION 源码（约 53 MB）…"
-    curl --fail --location --retry 3 --continue-at - \
-        --output "$ARCHIVE.part" \
-        "https://github.com/openssl/openssl/releases/download/openssl-$VERSION/openssl-$VERSION.tar.gz"
+    if ! curl --fail --location --retry 3 --continue-at - \
+        --output "$ARCHIVE.part" "$SOURCE_URL"; then
+        print -u2 "下载失败：$SOURCE_URL"
+        print -u2 "可设置 IMIRROR_OPENSSL_URL 指向 openssl-$VERSION.tar.gz 的镜像后重试。"
+        exit 1
+    fi
     mv "$ARCHIVE.part" "$ARCHIVE"
 fi
 

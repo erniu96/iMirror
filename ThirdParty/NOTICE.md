@@ -12,7 +12,7 @@ iMirror 的 AirPlay/RAOP 协议层来自用户提供的 UxPlay 派生参考实�
 - time64 — MIT License，Copyright (c) 2007-2010 Michael G Schwern，位于 `AirPlay/plist/time64.*`，完整条款见 `time64-LICENSE.txt`。
 - LibTomCrypt 的 SHA-512 实现 — 原文件声明可自由用于所有用途且不提供保证；位于 `AirPlay/ed25519/sha512.*`，保留的声明见 `SHA512-NOTICE.txt`。该目录仅保留 SHA-512，不再包含旧 Ed25519 配对实现。
 - [PiP by amitv87](https://github.com/amitv87/PiP) — MIT License，原参考实现包含相关实现思路；原有条款保留在 `PiP-LICENSE.txt`。
-- [OpenSSL](https://github.com/openssl/openssl) — Apache License 2.0；构建时动态链接并将 `libcrypto.3.dylib` 复制到应用包。日常构建使用本机 Homebrew `openssl@3`，可移植构建使用 `Scripts/prepare-openssl.sh` 指定且校验的版本；完整条款见 `OpenSSL-LICENSE.txt`。
+- [OpenSSL](https://github.com/openssl/openssl) — Apache License 2.0；构建时动态链接并将 `libcrypto.3.dylib` 复制到应用包。默认由 `Scripts/prepare-openssl.sh` 从指定且校验 SHA-256 的官方源码编译，也可通过 `IMIRROR_OPENSSL_PREFIX` 使用自行编译的版本；完整条款见 `OpenSSL-LICENSE.txt`。
 
 iMirror 整体按 GPLv3 分发。提供二进制时，请同时提供对应版本的源代码、构建脚本和这些声明；发布脚本会同时生成源码包。第三方组件各自的原始许可和版权声明继续保留。
 

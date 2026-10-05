@@ -17,27 +17,30 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 - 睡眠时停止网络服务，唤醒后自动恢复。
 - Developer ID 签名、公证和 zip 分发脚本。
 
-## 构建
+## 安装
 
-要求 macOS 14 或更高版本、Xcode Command Line Tools、Homebrew OpenSSL 3。日常构建默认以当前 macOS 为最低版本，使用 Homebrew 的动态库。
+要求 macOS 14 或更高版本和 Xcode Command Line Tools，不需要 Homebrew。没有安装 Command Line Tools 时先运行 `xcode-select --install`。
 
 ```bash
-brew install openssl@3
+bash install.sh
+```
+
+脚本会编译应用，退出正在运行的旧版本，用 `ditto` 复制到 `/Applications/iMirror.app` 并启动。当前用户没有 `/Applications` 写权限时会通过 `sudo` 请求管理员密码。加 `--no-open` 只安装不启动；用 `IMIRROR_INSTALL_DIR` 可以安装到其他目录。
+
+首次构建会从 OpenSSL 官方 GitHub Release 下载 3.6.3 源码（约 53 MB），校验 SHA-256 后编译，需要几分钟；产物缓存在 `.dependencies`，之后直接复用。GitHub 下载慢时，可用 `IMIRROR_OPENSSL_URL` 指向同一文件的镜像，校验仍然生效。已有自己编译的 OpenSSL 3 时，可用 `IMIRROR_OPENSSL_PREFIX` 指定其安装前缀。
+
+## 开发构建
+
+```bash
 ./build.sh test
 bash command.txt
 ```
 
-`bash command.txt` 会构建并启动菜单栏应用，可从任意工作目录调用。iMirror 仅支持 macOS；在 Linux 或 Windows 上运行时会明确提示并退出。
+`bash command.txt` 会构建并直接从 `build/` 启动菜单栏应用，可从任意工作目录调用，适合开发调试；日常使用请用 `install.sh` 安装，“登录时启动”需要应用位于固定路径。iMirror 仅支持 macOS；在 Linux 或 Windows 上运行时会明确提示并退出。
 
-给其他系统版本分发时，显式指定最低版本：
+构建产物默认以 macOS 14 为最低版本，可在其他 macOS 14 及以上的同架构 Mac 上运行。需要更高的最低版本时设置 `IMIRROR_MINIMUM_MACOS`，例如 `IMIRROR_MINIMUM_MACOS=15.0 ./build.sh`；每个最低版本会单独编译一份 OpenSSL。
 
-```bash
-IMIRROR_MINIMUM_MACOS=14.0 ./build.sh test
-```
-
-可移植构建首次会下载并编译一次 OpenSSL 3（约 53 MB），后续复用 `.dependencies` 中与目标版本一致的产物。
-
-应用产物为 `build/iMirror.app`。本地构建使用 ad-hoc 签名；给朋友分发前必须按 [分发文档](Documentation/DISTRIBUTION.md) 完成 Developer ID 签名和公证。
+应用产物为 `build/iMirror.app`。本地构建使用 ad-hoc 签名，每次重新构建签名都会变化，系统可能再次询问本地网络或防火墙权限，属于正常现象。给朋友分发前必须按 [分发文档](Documentation/DISTRIBUTION.md) 完成 Developer ID 签名和公证。
 
 ## 测试
 
