@@ -24,6 +24,8 @@ jobs:
       - name: Install test dependencies
         run: sudo apt-get update && sudo apt-get install -y libssl-dev
       - run: ./Scripts/test-protocol.sh
+      - name: Check localizations
+        run: python3 Scripts/check-localizations.py
 
   macos:
     name: macOS (${{ matrix.runner }})

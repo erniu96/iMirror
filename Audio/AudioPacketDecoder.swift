@@ -10,8 +10,8 @@ final class AudioPacketDecoder {
 
         var errorDescription: String? {
             switch self {
-            case .unsupportedOutputFormat: return "无法创建音频输出格式"
-            case .converter(let status): return "无法创建音频解码器（\(status)）"
+            case .unsupportedOutputFormat: return String(localized: "Couldn’t create the audio output format.")
+            case .converter(let status): return String(localized: "Couldn’t create the audio decoder (\(Int(status))).")
             }
         }
     }

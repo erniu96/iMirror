@@ -106,7 +106,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
 
 - (BOOL)start:(NSError **)error {
     if (_state == AirPlayBridgeStateRunning || _state == AirPlayBridgeStateConnected) {
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:1 userInfo:@{NSLocalizedDescriptionKey: @"接收器已在运行"}];
+        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:1 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"The receiver is already running.", nil)}];
         return NO;
     }
     
@@ -144,7 +144,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
     if (!_raop) {
         [self _logMessage:@"Failed to initialize AirPlay receiver" level:LOGGER_ERR];
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:2 userInfo:@{NSLocalizedDescriptionKey: @"无法初始化 AirPlay 接收器"}];
+        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:2 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t initialize the AirPlay receiver.", nil)}];
         return NO;
     }
     
@@ -185,7 +185,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         raop_destroy(_raop);
         _raop = NULL;
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:3 userInfo:@{NSLocalizedDescriptionKey: @"无法启动 AirPlay 网络监听"}];
+        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:3 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t start listening for AirPlay connections.", nil)}];
         return NO;
     }
     
@@ -203,7 +203,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         raop_destroy(_raop);
         _raop = NULL;
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:4 userInfo:@{NSLocalizedDescriptionKey: @"无法初始化 Bonjour/AWDL 广播"}];
+        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:4 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t initialize Bonjour/AWDL advertising.", nil)}];
         return NO;
     }
     
@@ -217,7 +217,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         raop_destroy(_raop);
         _raop = NULL;
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:5 userInfo:@{NSLocalizedDescriptionKey: @"无法配置 AirPlay 接收器身份"}];
+        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:5 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t configure the AirPlay receiver identity.", nil)}];
         return NO;
     }
     
@@ -240,7 +240,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         _raop = NULL;
         self.state = AirPlayBridgeStateFailed;
         if (error) {
-            NSString *message = [NSString stringWithFormat:@"Bonjour/AWDL 服务注册失败（RAOP=%d, AirPlay=%d）", raop_reg, airplay_reg];
+            NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Bonjour/AWDL service registration failed (RAOP=%d, AirPlay=%d).", nil), raop_reg, airplay_reg];
             *error = [NSError errorWithDomain:@"com.erniu.imirror" code:6 userInfo:@{NSLocalizedDescriptionKey: message}];
         }
         return NO;
@@ -357,7 +357,7 @@ static void _conn_init(void *cls, raop_connection_t *conn) {
         uint64_t sessionID = (uint64_t)(uintptr_t)conn;
         [bridge _activateSessionID:sessionID];
         
-        NSString *name = conn->devInfo.name ? [NSString stringWithUTF8String:conn->devInfo.name] : @"Apple 设备";
+        NSString *name = conn->devInfo.name ? [NSString stringWithUTF8String:conn->devInfo.name] : NSLocalizedString(@"Apple device", nil);
         NSString *model = conn->devInfo.model ? [NSString stringWithUTF8String:conn->devInfo.model] : @"";
         dispatch_async(dispatch_get_main_queue(), ^{
             bridge.state = AirPlayBridgeStateConnected;

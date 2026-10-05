@@ -10,7 +10,7 @@ final class PinPanelController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        panel.title = "iMirror 验证码"
+        panel.title = String(localized: "iMirror Code")
         panel.level = .floating
         panel.isReleasedWhenClosed = false
         panel.hidesOnDeactivate = false
@@ -43,12 +43,12 @@ private struct PinPanelContent: View {
             Image(systemName: "lock.shield.fill")
                 .font(.system(size: 30))
                 .foregroundStyle(.orange)
-            Text("在发起投屏的设备上输入")
+            Text("Enter on the mirroring device")
                 .font(.headline)
             Text(code)
                 .font(.system(size: 38, weight: .bold, design: .monospaced))
                 .textSelection(.enabled)
-            Text("验证成功后，此窗口会自动隐藏。")
+            Text("This window closes once the device is verified.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

@@ -76,7 +76,7 @@ final class H264Decoder {
             formatDescriptionOut: &description
         )
         guard descriptionStatus == noErr, let description else {
-            onError?("无法创建 H.264 格式描述（\(descriptionStatus)）")
+            onError?(String(localized: "Couldn’t create the H.264 format description (\(Int(descriptionStatus)))."))
             return
         }
         formatDescription = description
@@ -109,7 +109,7 @@ final class H264Decoder {
         )
         guard sessionStatus == noErr, let session else {
             formatDescription = nil
-            onError?("无法创建 VideoToolbox 解码器（\(sessionStatus)）")
+            onError?(String(localized: "Couldn’t create the VideoToolbox decoder (\(Int(sessionStatus)))."))
             return
         }
 
@@ -180,7 +180,7 @@ final class H264Decoder {
             infoFlagsOut: &infoFlags
         )
         if decodeStatus != noErr {
-            onError?("H.264 帧解码失败（\(decodeStatus)）")
+            onError?(String(localized: "Couldn’t decode an H.264 frame (\(Int(decodeStatus)))."))
         }
     }
 
