@@ -4,8 +4,10 @@ set -euo pipefail
 readonly PROJECT_DIR="${0:A:h:h}"
 readonly APP_BUNDLE="$PROJECT_DIR/build/iMirror.app"
 readonly OUTPUT_DIR="$PROJECT_DIR/dist"
-readonly ARCHIVE="$OUTPUT_DIR/iMirror-1.0.0-$(uname -m).zip"
-readonly SOURCE_ARCHIVE="$OUTPUT_DIR/iMirror-1.0.0-source.tar.gz"
+VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PROJECT_DIR/Resources/Info.plist")"
+readonly VERSION
+readonly ARCHIVE="$OUTPUT_DIR/iMirror-$VERSION-$(uname -m).zip"
+readonly SOURCE_ARCHIVE="$OUTPUT_DIR/iMirror-$VERSION-source.tar.gz"
 
 if ! git -C "$PROJECT_DIR" rev-parse --verify HEAD >/dev/null 2>&1; then
     print -u2 "请先将待发布源代码提交到 Git。"
@@ -42,7 +44,7 @@ spctl --assess --type execute --verbose=2 "$APP_BUNDLE"
 
 git -C "$PROJECT_DIR" archive \
     --format=tar.gz \
-    --prefix=iMirror-1.0.0/ \
+    --prefix=iMirror-$VERSION/ \
     --output="$SOURCE_ARCHIVE" \
     HEAD
 

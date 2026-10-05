@@ -80,7 +80,7 @@ struct SettingsView: View {
                     .frame(width: 96, height: 96)
                 Text("iMirror")
                     .font(.title.bold())
-                Text("版本 1.0.0")
+                Text("版本 \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")")
                     .foregroundStyle(.secondary)
                 Text("macOS 原生菜单栏 AirPlay 屏幕镜像接收器")
                     .multilineTextAlignment(.center)

@@ -24,6 +24,6 @@
 
    分发脚本默认生成 macOS 14+ 产物，并首次从已校验的官方源码编译对应最低系统版本的 OpenSSL。可通过 `IMIRROR_MINIMUM_MACOS` 提高最低版本。
 
-产物位于 `dist/iMirror-1.0.0-<架构>.zip`，对应源代码位于 `dist/iMirror-1.0.0-source.tar.gz`；分发 GPLv3 二进制时请一并提供两者。当前脚本按构建 Mac 的原生架构生成包；Apple Silicon 上是 arm64，Intel Mac 上是 x86_64。若要发布 universal 版本，需要分别准备两个架构的 OpenSSL 动态库和应用可执行文件，再使用 `lipo` 合并匹配的 Mach-O 文件并重新签名、公证。
+产物位于 `dist/iMirror-<版本>-<架构>.zip`，对应源代码位于 `dist/iMirror-<版本>-source.tar.gz`（版本取自 `Info.plist`）；分发 GPLv3 二进制时请一并提供两者。当前脚本按构建 Mac 的原生架构生成包；Apple Silicon 上是 arm64，Intel Mac 上是 x86_64。若要发布 universal 版本，需要分别准备两个架构的 OpenSSL 动态库和应用可执行文件，再使用 `lipo` 合并匹配的 Mach-O 文件并重新签名、公证。
 
 解压后请把 iMirror 拖到 `/Applications`。登录项注册要求应用位于稳定路径，不应直接从 Downloads 或压缩包临时目录运行。
