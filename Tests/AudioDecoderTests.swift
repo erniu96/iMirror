@@ -82,6 +82,9 @@ private struct AudioDecoderTests {
             }
             decodedFrames += Int(buffer.frameLength)
         }
+        if decodedFrames == 0 {
+            print("  \(name)：AudioConverter 最后状态 \(decoder.lastStatus)，共 \(packets.count) 个数据包")
+        }
         let rms = measuredSamples > 0 ? sqrt(sumOfSquares / Double(measuredSamples)) : 0
         expect(decodedFrames > frameCount * 8 / 10, "\(name)：解码出 \(decodedFrames)/\(frameCount) 帧")
         // A 0.5-amplitude sine has an RMS of about 0.354.

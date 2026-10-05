@@ -18,6 +18,8 @@ final class AudioPacketDecoder {
 
     let format: AirPlayAudioFormat
     let outputFormat: AVAudioFormat
+    /// Status of the most recent AudioConverter call, for diagnostics.
+    private(set) var lastStatus: OSStatus = noErr
     private var converter: AudioConverterRef?
 
     init(format: AirPlayAudioFormat) throws {
@@ -65,6 +67,8 @@ final class AudioPacketDecoder {
 
         let capacity = AVAudioFrameCount(max(format.framesPerPacket, 4_096))
         guard let buffer = AVAudioPCMBuffer(pcmFormat: outputFormat, frameCapacity: capacity) else { return nil }
+        // The buffer list reports frameLength bytes; expose the full capacity to the converter.
+        buffer.frameLength = capacity
 
         var frames = UInt32(capacity)
         let status: OSStatus = packet.withUnsafeBytes { bytes in
@@ -89,6 +93,7 @@ final class AudioPacketDecoder {
                 nil
             )
         }
+        lastStatus = status
         guard status == noErr || status == endOfPacketStatus, frames > 0 else { return nil }
         buffer.frameLength = frames
         return buffer
