@@ -2,7 +2,7 @@
 
 朋友可直接使用的 macOS 应用需要 Developer ID 签名和 Apple 公证。构建脚本不会把 ad-hoc 签名伪装成可分发版本。
 
-1. 安装 Xcode Command Line Tools、Homebrew 和 OpenSSL：`brew install openssl@3`。
+1. 安装 Xcode Command Line Tools：`xcode-select --install`。OpenSSL 由构建脚本从已校验的官方源码编译，不需要 Homebrew。
 2. 在 Apple Developer 账户创建 `Developer ID Application` 证书。
 3. 保存公证凭据：
 

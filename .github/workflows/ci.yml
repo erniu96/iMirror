@@ -39,11 +39,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - name: Install OpenSSL
-        run: brew list openssl@3 >/dev/null 2>&1 || brew install openssl@3
+      - name: Cache OpenSSL build
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: .dependencies
+          key: openssl-${{ matrix.runner }}-${{ hashFiles('Scripts/prepare-openssl.sh') }}
       - name: Check shell scripts
         run: |
-          for script in command.txt build.sh Scripts/*.sh; do
+          for script in command.txt install.sh build.sh Scripts/*.sh; do
             case "$(head -n 1 "$script")" in
               *zsh*) zsh -n "$script" ;;
               *bash*) bash -n "$script" ;;
@@ -52,17 +55,8 @@ jobs:
           done
       - name: Build, verify signing, and run all tests
         run: ./build.sh test
+      - name: Install into a temporary Applications folder
+        run: |
+          IMIRROR_INSTALL_DIR="$RUNNER_TEMP/Applications" ./install.sh --no-open
+          codesign --verify --deep --strict "$RUNNER_TEMP/Applications/iMirror.app"
 
-  portable:
-    name: macOS 14 deployment build
-    runs-on: macos-15
-    timeout-minutes: 30
-    env:
-      IMIRROR_MINIMUM_MACOS: "14.0"
-      IMIRROR_ALLOW_SOFTWARE_DECODER: "1"
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-      - name: Build OpenSSL from verified source and run all tests
-        run: ./build.sh test

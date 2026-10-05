@@ -68,9 +68,9 @@ struct SettingsView: View {
             .tabItem { Label("配对", systemImage: "key.fill") }
 
             VStack(spacing: 14) {
-                Image(systemName: "airplayvideo")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.tint)
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .frame(width: 96, height: 96)
                 Text("iMirror")
                     .font(.title.bold())
                 Text("版本 1.0.0")

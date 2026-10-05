@@ -1,6 +1,10 @@
+<p align="center"><img src="Resources/AppIcon.svg" width="160" alt="iMirror 图标"></p>
+
 # iMirror
 
 iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay 屏幕镜像接收器。应用启动后仅驻留在右上角菜单栏；连接 iPhone、iPad 或 Mac 后，以无标题栏悬浮窗口显示画面。
+
+**[下载最新版本](https://github.com/erniu96/iMirror/releases/latest)** · 需要 macOS 14 或更高版本 · 同时支持 Apple Silicon 和 Intel Mac
 
 ## 已实现
 
@@ -15,29 +19,50 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 - 横竖屏切换时保持视频比例，首帧按 1:1 像素或屏幕可见区域自动适配。
 - 使用 `SMAppService` 支持登录时自动启动。
 - 睡眠时停止网络服务，唤醒后自动恢复。
-- Developer ID 签名、公证和 zip 分发脚本。
+- 推送版本标签后自动构建 universal 应用并发布到 GitHub Release；另有 Developer ID 签名、公证和 zip 分发脚本。
 
-## 构建
+## 下载安装（无需编译）
 
-要求 macOS 14 或更高版本、Xcode Command Line Tools、Homebrew OpenSSL 3。日常构建默认以当前 macOS 为最低版本，使用 Homebrew 的动态库。
+从 [Releases](https://github.com/erniu96/iMirror/releases/latest) 下载最新的 `iMirror-<版本>-macOS-universal.zip`，同时支持 Apple Silicon 和 Intel Mac。解压后把 `iMirror.app` 拖到“应用程序”文件夹。
+
+发布版使用 ad-hoc 签名，没有经过 Apple 公证，首次打开会被 Gatekeeper 拦截，任选一种方式放行：
+
+- **macOS 15 及以上**：先双击打开一次，在提示中点“完成”；然后到“系统设置 → 隐私与安全性”底部点“仍要打开”，输入密码确认。
+- **macOS 14**：按住 Control 点按（或右键）iMirror，选“打开”，再点“打开”。
+- **终端（所有版本）**：`xattr -dr com.apple.quarantine /Applications/iMirror.app`。提示“已损坏，无法打开”时也用这条命令。
+
+放行后即可正常双击打开。首次启动请允许 iMirror 访问本地网络。
+
+## 从源码安装
+
+要求 macOS 14 或更高版本和 Xcode Command Line Tools，不需要 Homebrew。没有安装 Command Line Tools 时先运行 `xcode-select --install`。
 
 ```bash
-brew install openssl@3
+bash install.sh
+```
+
+脚本会编译应用，退出正在运行的旧版本，用 `ditto` 复制到 `/Applications/iMirror.app` 并启动。当前用户没有 `/Applications` 写权限时会通过 `sudo` 请求管理员密码。加 `--no-open` 只安装不启动；用 `IMIRROR_INSTALL_DIR` 可以安装到其他目录。
+
+首次构建会从 OpenSSL 官方 GitHub Release 下载 3.6.3 源码（约 53 MB），校验 SHA-256 后编译，需要几分钟；产物缓存在 `.dependencies`，之后直接复用。GitHub 下载慢时，可用 `IMIRROR_OPENSSL_URL` 指向同一文件的镜像，校验仍然生效。已有自己编译的 OpenSSL 3 时，可用 `IMIRROR_OPENSSL_PREFIX` 指定其安装前缀。
+
+## 开发构建
+
+```bash
 ./build.sh test
 bash command.txt
 ```
 
-`bash command.txt` 会构建并启动菜单栏应用，可从任意工作目录调用。iMirror 仅支持 macOS；在 Linux 或 Windows 上运行时会明确提示并退出。
+`bash command.txt` 会构建并直接从 `build/` 启动菜单栏应用，可从任意工作目录调用，适合开发调试；日常使用请用 `install.sh` 安装，“登录时启动”需要应用位于固定路径。iMirror 仅支持 macOS；在 Linux 或 Windows 上运行时会明确提示并退出。
 
-给其他系统版本分发时，显式指定最低版本：
+构建产物默认以 macOS 14 为最低版本，可在其他 macOS 14 及以上的同架构 Mac 上运行。需要更高的最低版本时设置 `IMIRROR_MINIMUM_MACOS`，例如 `IMIRROR_MINIMUM_MACOS=15.0 ./build.sh`；每个最低版本会单独编译一份 OpenSSL。
 
-```bash
-IMIRROR_MINIMUM_MACOS=14.0 ./build.sh test
-```
+应用产物为 `build/iMirror.app`。本地构建使用 ad-hoc 签名，每次重新构建签名都会变化，系统可能再次询问本地网络或防火墙权限，属于正常现象。给朋友分发前必须按 [分发文档](Documentation/DISTRIBUTION.md) 完成 Developer ID 签名和公证。
 
-可移植构建首次会下载并编译一次 OpenSSL 3（约 53 MB），后续复用 `.dependencies` 中与目标版本一致的产物。
+应用图标的源文件是 `Resources/AppIcon.svg`。修改后运行 `node Scripts/make-app-icon.mjs` 重新生成 `Resources/AppIcon.icns`（需要 Node 和 Playwright Chromium），并一起提交。
 
-应用产物为 `build/iMirror.app`。本地构建使用 ad-hoc 签名；给朋友分发前必须按 [分发文档](Documentation/DISTRIBUTION.md) 完成 Developer ID 签名和公证。
+## 发布
+
+推送与 `Info.plist` 中 `CFBundleShortVersionString` 一致的标签（例如 `v1.0.0`）后，`.github/workflows/release.yml` 会在 Apple Silicon 和 Intel 上分别构建并运行全部测试，合并成 universal 应用，以 ad-hoc 签名打包，连同 SHA-256 校验文件发布到 GitHub Release，说明文字取自 `.github/release-notes.md`。需要正式签名和公证的版本请按 [分发文档](Documentation/DISTRIBUTION.md) 在本机打包。
 
 ## 测试
 
@@ -51,7 +76,7 @@ GitHub Actions 配置为在 Apple Silicon 和 Intel 的 macOS 15 环境中运行
 ./Scripts/test-protocol.sh
 ```
 
-Linux 上需要 C 编译器和 OpenSSL 3 开发包；这条命令不会构建 macOS 应用。
+Linux 上需要 C 编译器和 OpenSSL 3 开发包；这条命令不会构建 macOS 应用。Linux 桌面用户如需 AirPlay 接收器，可使用本项目协议层的上游 [UxPlay](https://github.com/FDH2/UxPlay)。
 
 ## 使用
 
@@ -60,7 +85,15 @@ Linux 上需要 C 编译器和 OpenSSL 3 开发包；这条命令不会构建 ma
 3. 选择带本机标记的名称（例如 `iMirror-A7K2`），按 Mac 上显示的随机验证码完成配对。
 4. 在设置中可修改接收器基础名称、开启登录时启动、管理配对设备。
 
+iPhone 找不到接收器时，依次检查：macOS 15 及以上首次启动时是否允许了“本地网络”权限（可在“系统设置 → 隐私与安全性 → 本地网络”中重新打开）；iPhone 与 Mac 是否在同一 Wi-Fi；macOS 防火墙是否阻止了 iMirror 的传入连接。
+
 AWDL 没有面向第三方的公开“AirPlay 接收器”框架。iMirror 使用 Apple 公开的 DNS-SD P2P/AWDL 注册标志参与点对点发现，实际 AirPlay/RAOP 会话由开源协议层处理。部分 macOS 版本需要在“系统设置 → 通用 → 隔空投送与接力”中保持“隔空播放接收器”开启，才能让 AWDL 接口处于可用状态。
+
+## 卸载
+
+1. 在设置中关闭“登录时启动”，然后从菜单栏退出 iMirror。
+2. 删除 `/Applications/iMirror.app`。
+3. 如需同时清除接收器身份和已配对设备，删除 `~/Library/Application Support/iMirror`，并运行 `defaults delete com.erniu.imirror` 清除设置。
 
 ## 约定
 
