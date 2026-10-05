@@ -102,7 +102,11 @@ jobs:
         run: |
           set -euo pipefail
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            # The release may have been created in the GitHub web UI along with the tag.
             gh release upload "$GITHUB_REF_NAME" "$ARCHIVE" "$ARCHIVE.sha256" --clobber
+            if [[ -z "$(gh release view "$GITHUB_REF_NAME" --json body --jq .body)" ]]; then
+              gh release edit "$GITHUB_REF_NAME" --notes-file .github/release-notes.md
+            fi
           else
             gh release create "$GITHUB_REF_NAME" "$ARCHIVE" "$ARCHIVE.sha256" \
               --title "iMirror $VERSION" \
