@@ -84,13 +84,18 @@ jobs:
           codesign --force --sign - universal/iMirror.app/Contents/Frameworks/libcrypto.3.dylib
           codesign --force --sign - universal/iMirror.app
           codesign --verify --deep --strict universal/iMirror.app
+      - name: Install dmgbuild
+        run: |
+          python3 -m venv "$RUNNER_TEMP/dmgbuild"
+          "$RUNNER_TEMP/dmgbuild/bin/pip" install --quiet dmgbuild==1.6.7
+          echo "$RUNNER_TEMP/dmgbuild/bin" >> "$GITHUB_PATH"
       - name: Package
         id: package
         run: |
           set -euo pipefail
           version="${GITHUB_REF_NAME#v}"
-          archive="iMirror-$version-macOS-universal.zip"
-          ditto -c -k --sequesterRsrc --keepParent universal/iMirror.app "$archive"
+          archive="iMirror-$version-macOS-universal.dmg"
+          ./Scripts/make-dmg.sh universal/iMirror.app "$archive"
           shasum -a 256 "$archive" > "$archive.sha256"
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"

@@ -101,6 +101,7 @@ swift_sources=(
     "$PROJECT_DIR"/Storage/*.swift(N)
     "$PROJECT_DIR"/Services/*.swift(N)
     "$PROJECT_DIR"/Video/*.swift(N)
+    "$PROJECT_DIR"/Audio/*.swift(N)
     "$PROJECT_DIR"/Window/*.swift(N)
     "$PROJECT_DIR"/App/*.swift(N)
 )
@@ -138,6 +139,8 @@ xcrun swiftc \
     -framework VideoToolbox \
     -framework CoreVideo \
     -framework CoreMedia \
+    -framework AVFoundation \
+    -framework AudioToolbox \
     -framework ServiceManagement \
     -lobjc -lc++
 
@@ -205,6 +208,18 @@ if [[ "$ACTION" == "test" ]]; then
         -framework CoreMedia \
         -o "$BUILD_DIR/iMirrorVideoTests"
     "$BUILD_DIR/iMirrorVideoTests" "$VIDEO_FIXTURE" || exit $?
+
+    xcrun swiftc \
+        -swift-version 5 \
+        -target "$TARGET_ARCH-apple-macosx$MINIMUM_MACOS" \
+        -sdk "$SDK_PATH" \
+        "$PROJECT_DIR/Audio/AirPlayAudioFormat.swift" \
+        "$PROJECT_DIR/Audio/AudioPacketDecoder.swift" \
+        "$PROJECT_DIR/Tests/AudioDecoderTests.swift" \
+        -framework AVFoundation \
+        -framework AudioToolbox \
+        -o "$BUILD_DIR/iMirrorAudioTests"
+    "$BUILD_DIR/iMirrorAudioTests" || exit $?
 fi
 
 if [[ "$ACTION" == "run" ]]; then

@@ -32,6 +32,13 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                Section("声音") {
+                    Toggle("播放投屏设备的声音", isOn: $model.playsAudio)
+                    Text("音量跟随投屏设备；在设备上调节音量即可。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
                 Section("启动") {
                     Toggle(
                         "登录时自动启动",
@@ -82,7 +89,7 @@ struct SettingsView: View {
             .padding()
             .tabItem { Label("关于", systemImage: "info.circle") }
         }
-        .frame(width: 480, height: 350)
+        .frame(width: 480, height: 440)
         .onAppear {
             receiverName = model.configuration.baseName
         }

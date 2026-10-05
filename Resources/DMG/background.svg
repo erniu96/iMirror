@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400">
+  <defs>
+    <linearGradient id="bg" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#E3F3E9"/>
+      <stop offset="1" stop-color="#C6E6D3"/>
+    </linearGradient>
+    <marker id="head" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M1,1 L9,5 L1,9" fill="none" stroke="#2E5245" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="640" height="400" fill="url(#bg)"/>
+  <g fill="#FFFFFF">
+    <path transform="translate(70,70) scale(1.2)" d="M0,-10 C1.5,-2 2,-1.5 10,0 C2,1.5 1.5,2 0,10 C-1.5,2 -2,1.5 -10,0 C-2,-1.5 -1.5,-2 0,-10 Z"/>
+    <path transform="translate(585,320) scale(0.9)" d="M0,-10 C1.5,-2 2,-1.5 10,0 C2,1.5 1.5,2 0,10 C-1.5,2 -2,1.5 -10,0 C-2,-1.5 -1.5,-2 0,-10 Z"/>
+    <circle cx="560" cy="80" r="4" fill-opacity="0.8"/>
+  </g>
+  <text x="320" y="62" text-anchor="middle" font-family="PingFang SC, WenQuanYi Zen Hei, sans-serif" font-size="22" font-weight="600" fill="#2E5245">把 iMirror 拖到“应用程序”文件夹</text>
+  <path d="M250,182 Q320,150 390,182" fill="none" stroke="#2E5245" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 9" marker-end="url(#head)"/>
+  <text x="320" y="344" text-anchor="middle" font-family="PingFang SC, WenQuanYi Zen Hei, sans-serif" font-size="12.5" fill="#3F6A5A">首次打开若被拦截：系统设置 → 隐私与安全性 → 底部点“仍要打开”</text>
+  <text x="320" y="366" text-anchor="middle" font-family="PingFang SC, WenQuanYi Zen Hei, sans-serif" font-size="12.5" fill="#3F6A5A">或在终端运行 xattr -dr com.apple.quarantine /Applications/iMirror.app</text>
+</svg>

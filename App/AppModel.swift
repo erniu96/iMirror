@@ -13,6 +13,12 @@ final class AppModel: ObservableObject {
             sessions.values.forEach { $0.windowController.isAlwaysOnTop = alwaysOnTop }
         }
     }
+    @Published var playsAudio: Bool {
+        didSet {
+            settingsStore.playsAudio = playsAudio
+            audioEngine.setMuted(!playsAudio)
+        }
+    }
     @Published var alertMessage: String?
 
     private let receiverService: AirPlayReceiverService
@@ -20,6 +26,8 @@ final class AppModel: ObservableObject {
     private let pairingStore: PairingStore?
     private let loginItemService: LoginItemService
     private let videoRouter: VideoSessionRouter
+    private let audioEngine: AudioPlaybackEngine
+    private var welcomeWindowController: WelcomeWindowController?
     private var sessions: [UInt64: MirroringSession] = [:]
     private var sessionOrder: [UInt64] = []
     private var pinPanelController: PinPanelController?
@@ -37,6 +45,7 @@ final class AppModel: ObservableObject {
         let receiverService = AirPlayReceiverService()
         let loginItemService = LoginItemService()
         let videoRouter = VideoSessionRouter()
+        let audioEngine = AudioPlaybackEngine()
 
         self.settingsStore = settingsStore
         self.configuration = configuration
@@ -45,17 +54,38 @@ final class AppModel: ObservableObject {
         self.launchAtLogin = loginItemService.isEnabled
         self.alwaysOnTop = settingsStore.alwaysOnTop
         self.videoRouter = videoRouter
+        self.audioEngine = audioEngine
+        self.playsAudio = settingsStore.playsAudio
         self.pairingStore = try? PairingStore()
 
         ProcessInfo.processInfo.disableAutomaticTermination("iMirror AirPlay receiver")
         receiverService.setVideoSink { [weak videoRouter] sessionID, data in
             videoRouter?.route(sessionID: sessionID, accessUnit: data)
         }
+        audioEngine.setMuted(!settingsStore.playsAudio)
+        audioEngine.onError = { [weak self] message in
+            self?.alertMessage = message
+        }
+        receiverService.setAudioSink(audioEngine)
         receiverService.onEvent = { [weak self] event in
             self?.handle(event)
         }
         observeSystemLifecycle()
         startReceiver()
+
+        if !settingsStore.hasCompletedOnboarding {
+            DispatchQueue.main.async { [weak self] in self?.showWelcome() }
+        }
+    }
+
+    /// Shows the getting-started guide; also used when the app is opened again while running.
+    func showWelcome() {
+        if welcomeWindowController == nil {
+            welcomeWindowController = WelcomeWindowController(model: self) { [weak self] in
+                self?.settingsStore.hasCompletedOnboarding = true
+            }
+        }
+        welcomeWindowController?.present()
     }
 
     func startReceiver() {
@@ -206,6 +236,7 @@ final class AppModel: ObservableObject {
 
     private func endSession(sessionID: UInt64) {
         videoRouter.detach(sessionID: sessionID)
+        audioEngine.endSession(sessionID: sessionID)
         sessions.removeValue(forKey: sessionID)?.windowController.endSession()
         sessionOrder.removeAll { $0 == sessionID }
         refreshStreamingStatus()
@@ -213,6 +244,7 @@ final class AppModel: ObservableObject {
 
     private func endAllSessions() {
         videoRouter.detachAll()
+        audioEngine.endAllSessions()
         sessions.values.forEach { $0.windowController.endSession() }
         sessions.removeAll()
         sessionOrder.removeAll()
@@ -235,6 +267,12 @@ final class AppModel: ObservableObject {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self?.startReceiver()
                 }
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: .iMirrorReopenRequested)
+            .sink { [weak self] _ in
+                Task { @MainActor in self?.showWelcome() }
             }
             .store(in: &cancellables)
 
