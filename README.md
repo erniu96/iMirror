@@ -17,13 +17,16 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 - 支持多台设备同时投屏：每个连接使用独立的硬件解码器、Metal 视图和窗口，彼此断开互不影响。
 - 无标题栏、可缩放、默认置顶的投屏窗口；鼠标移入才显示停止投屏、置顶和全屏按钮。
 - 横竖屏切换时保持视频比例，首帧按 1:1 像素或屏幕可见区域自动适配。
+- 播放投屏设备的声音（AAC-ELD、AAC-LC、ALAC、PCM），跟随设备音量，可在菜单中关闭。
+- 首次启动显示使用引导；应用已在运行时再次打开也会弹出引导，菜单中可随时点“使用帮助”。
+- 菜单栏图标是应用图标的单色版本，自动适配浅色和深色菜单栏。
 - 使用 `SMAppService` 支持登录时自动启动。
 - 睡眠时停止网络服务，唤醒后自动恢复。
 - 推送版本标签后自动构建 universal 应用并发布到 GitHub Release；另有 Developer ID 签名、公证和 zip 分发脚本。
 
 ## 下载安装（无需编译）
 
-从 [Releases](https://github.com/erniu96/iMirror/releases/latest) 下载最新的 `iMirror-<版本>-macOS-universal.zip`，同时支持 Apple Silicon 和 Intel Mac。解压后把 `iMirror.app` 拖到“应用程序”文件夹。
+从 [Releases](https://github.com/erniu96/iMirror/releases/latest) 下载最新的 `iMirror-<版本>-macOS-universal.dmg`，同时支持 Apple Silicon 和 Intel Mac。双击打开后，把窗口里的 iMirror 图标拖到右边的“应用程序”文件夹即可。
 
 发布版使用 ad-hoc 签名，没有经过 Apple 公证，首次打开会被 Gatekeeper 拦截，任选一种方式放行：
 
@@ -31,7 +34,7 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 - **macOS 14**：按住 Control 点按（或右键）iMirror，选“打开”，再点“打开”。
 - **终端（所有版本）**：`xattr -dr com.apple.quarantine /Applications/iMirror.app`。提示“已损坏，无法打开”时也用这条命令。
 
-放行后即可正常双击打开。首次启动请允许 iMirror 访问本地网络。
+放行后即可正常双击打开。首次启动请允许 iMirror 访问本地网络，并按弹出的引导操作。
 
 ## 从源码安装
 
@@ -58,15 +61,17 @@ bash command.txt
 
 应用产物为 `build/iMirror.app`。本地构建使用 ad-hoc 签名，每次重新构建签名都会变化，系统可能再次询问本地网络或防火墙权限，属于正常现象。给朋友分发前必须按 [分发文档](Documentation/DISTRIBUTION.md) 完成 Developer ID 签名和公证。
 
+本地制作 dmg：`python3 -m pip install dmgbuild` 后运行 `./Scripts/make-dmg.sh build/iMirror.app iMirror.dmg`。dmg 窗口背景是 `Resources/DMG/background.svg` 渲染出的 `background.png` 与 `background@2x.png`。
+
 应用图标的源文件是 `Resources/AppIcon.svg`。修改后运行 `node Scripts/make-app-icon.mjs` 重新生成 `Resources/AppIcon.icns`（需要 Node 和 Playwright Chromium），并一起提交。
 
 ## 发布
 
-推送与 `Info.plist` 中 `CFBundleShortVersionString` 一致的标签（例如 `v1.0.0`）后，`.github/workflows/release.yml` 会在 Apple Silicon 和 Intel 上分别构建并运行全部测试，合并成 universal 应用，以 ad-hoc 签名打包，连同 SHA-256 校验文件发布到 GitHub Release，说明文字取自 `.github/release-notes.md`。需要正式签名和公证的版本请按 [分发文档](Documentation/DISTRIBUTION.md) 在本机打包。
+推送与 `Info.plist` 中 `CFBundleShortVersionString` 一致的标签（例如 `v1.0.0`）后，`.github/workflows/release.yml` 会在 Apple Silicon 和 Intel 上分别构建并运行全部测试，合并成 universal 应用，以 ad-hoc 签名，用 `Scripts/make-dmg.sh` 制作拖拽安装的 dmg，连同 SHA-256 校验文件发布到 GitHub Release，说明文字取自 `.github/release-notes.md`。需要正式签名和公证的版本请按 [分发文档](Documentation/DISTRIBUTION.md) 在本机打包。
 
 ## 测试
 
-`./build.sh test` 会完整构建应用，检查签名，运行协议测试、Swift 单元测试，以及两路独立的 H.264 解码测试。默认视频样本由程序生成，存放在 `Tests/Fixtures/`，无需准备本机录像；可用 `IMIRROR_VIDEO_FIXTURE` 指定其他 Annex-B H.264 文件，文件不存在时测试会失败。
+`./build.sh test` 会完整构建应用，检查签名，运行协议测试、Swift 单元测试、两路独立的 H.264 解码测试，以及音频解码测试（用系统编码器生成 AAC-ELD、AAC-LC、ALAC 数据，再按 AirPlay 协商参数解码）。默认视频样本由程序生成，存放在 `Tests/Fixtures/`，无需准备本机录像；可用 `IMIRROR_VIDEO_FIXTURE` 指定其他 Annex-B H.264 文件，文件不存在时测试会失败。
 
 GitHub Actions 配置为在 Apple Silicon 和 Intel 的 macOS 15 环境中运行完整测试。虚拟机通过 `IMIRROR_ALLOW_SOFTWARE_DECODER=1` 允许 VideoToolbox 使用软件解码；应用仍默认要求硬件解码。自动化测试不覆盖 iPhone 真机发现、配对、AWDL 连通性和 Metal 窗口显示，这些需要在 Mac 上实际投屏验收。
 
@@ -80,7 +85,7 @@ Linux 上需要 C 编译器和 OpenSSL 3 开发包；这条命令不会构建 ma
 
 ## 使用
 
-1. 启动 iMirror，菜单栏出现接收器图标。
+1. 启动 iMirror，菜单栏出现接收器图标（手机和显示器的小图标）。首次启动会弹出使用引导。
 2. 在 iPhone/iPad 控制中心打开“屏幕镜像”，或在 Mac 控制中心打开“屏幕镜像”。
 3. 选择带本机标记的名称（例如 `iMirror-A7K2`），按 Mac 上显示的随机验证码完成配对。
 4. 在设置中可修改接收器基础名称、开启登录时启动、管理配对设备。
@@ -101,7 +106,8 @@ AWDL 没有面向第三方的公开“AirPlay 接收器”框架。iMirror 使�
 - 验证码：每次新配对随机生成四位数字
 - 默认置顶：开启
 - 视频：H.264，最高广播能力 1920×1080@60
-- 音频：当前版本静音，不广播尚未实现的 HEVC 能力
+- 音频：播放发送端协商的 AAC-ELD、AAC-LC、ALAC 或 PCM 音频；为降低延迟，排队超过 0.35 秒的音频会被丢弃
+- 不广播尚未实现的 HEVC 能力
 
 更多设计说明见 [架构文档](Documentation/ARCHITECTURE.md)。
 

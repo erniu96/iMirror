@@ -27,6 +27,21 @@ typedef NS_ENUM(NSInteger, AirPlayBridgeState) {
 - (void)receiverDidReceiveVideoData:(NSData *)data
                          forSession:(uint64_t)sessionID
     NS_SWIFT_NAME(receiverDidReceiveVideoData(_:sessionID:));
+- (void)receiverDidSetAudioFormat:(uint8_t)compressionType
+                       sampleRate:(uint32_t)sampleRate
+                  framesPerPacket:(uint16_t)framesPerPacket
+                       forSession:(uint64_t)sessionID
+    NS_SWIFT_NAME(receiverDidSetAudioFormat(compressionType:sampleRate:framesPerPacket:sessionID:));
+- (void)receiverDidReceiveAudioData:(NSData *)data
+                         forSession:(uint64_t)sessionID
+    NS_SWIFT_NAME(receiverDidReceiveAudioData(_:sessionID:));
+- (void)receiverDidSetAudioVolume:(float)decibels
+                       forSession:(uint64_t)sessionID
+    NS_SWIFT_NAME(receiverDidSetAudioVolume(_:sessionID:));
+- (void)receiverDidFlushAudioForSession:(uint64_t)sessionID
+    NS_SWIFT_NAME(receiverDidFlushAudio(sessionID:));
+- (void)receiverDidStopAudioForSession:(uint64_t)sessionID
+    NS_SWIFT_NAME(receiverDidStopAudio(sessionID:));
 - (void)receiverDidDisconnectSession:(uint64_t)sessionID
     NS_SWIFT_NAME(receiverDidDisconnect(sessionID:));
 @end

@@ -64,6 +64,9 @@ static void _conn_destroy(void *cls, raop_connection_t *conn);
 static void _conn_reset(void *cls, int timeouts, bool reset_video, raop_connection_t *conn);
 static void _conn_teardown(void *cls, bool *teardown_96, bool *teardown_110, raop_connection_t *conn);
 static void _audio_process(void *cls, raop_ntp_t *ntp, aac_decode_struct *data, raop_connection_t *conn);
+static void _audio_get_format(void *cls, audio_format_info *info, raop_connection_t *conn);
+static void _audio_set_volume(void *cls, float volume, raop_connection_t *conn);
+static void _audio_flush(void *cls, raop_connection_t *conn);
 static void _video_process(void *cls, raop_ntp_t *ntp, h264_decode_struct *data, raop_connection_t *conn);
 static void _display_pin(void *cls, const char *pin);
 static void _register_client(void *cls, const char *device_id, const char *public_key);
@@ -120,6 +123,9 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
     cbs.conn_reset = _conn_reset;
     cbs.conn_teardown = _conn_teardown;
     cbs.audio_process = _audio_process;
+    cbs.audio_get_format = _audio_get_format;
+    cbs.audio_set_volume = _audio_set_volume;
+    cbs.audio_flush = _audio_flush;
     cbs.video_process = _video_process;
     cbs.display_pin = _display_pin;
     cbs.register_client = _register_client;
@@ -385,6 +391,11 @@ static void _conn_teardown(void *cls, bool *teardown_96, bool *teardown_110, rao
         AirPlayReceiverBridge *bridge = _bridge(cls);
         [bridge _logMessage:@"Connection teardown" level:LOGGER_INFO];
         BOOL endsVideo = *teardown_110 || !*teardown_96;
+        uint64_t audioSessionID = (uint64_t)(uintptr_t)conn;
+        if (*teardown_96 && [bridge _isSessionActive:audioSessionID] &&
+            [bridge.delegate respondsToSelector:@selector(receiverDidStopAudioForSession:)]) {
+            [bridge.delegate receiverDidStopAudioForSession:audioSessionID];
+        }
         if (endsVideo) {
             uint64_t sessionID = (uint64_t)(uintptr_t)conn;
             conn->usr_data = NULL;
@@ -404,7 +415,58 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
 }
 
 static void _audio_process(void *cls, raop_ntp_t *ntp, aac_decode_struct *data, raop_connection_t *conn) {
-    // Audio data received - first version silently discards
+    @autoreleasepool {
+        if (!data || !data->data || data->data_len <= 0) return;
+        AirPlayReceiverBridge *bridge = _bridge(cls);
+        uint64_t sessionID = (uint64_t)(uintptr_t)conn;
+        if (![bridge _isSessionActive:sessionID]) return;
+
+        // data->data is freed as soon as this callback returns.
+        NSData *copy = [NSData dataWithBytes:data->data length:data->data_len];
+        if ([bridge.delegate respondsToSelector:@selector(receiverDidReceiveAudioData:forSession:)]) {
+            [bridge.delegate receiverDidReceiveAudioData:copy forSession:sessionID];
+        }
+    }
+}
+
+static void _audio_get_format(void *cls, audio_format_info *info, raop_connection_t *conn) {
+    @autoreleasepool {
+        if (!info) return;
+        AirPlayReceiverBridge *bridge = _bridge(cls);
+        uint64_t sessionID = (uint64_t)(uintptr_t)conn;
+        [bridge _logMessage:[NSString stringWithFormat:@"Audio format: ct=%u sr=%u spf=%u media=%u screen=%u",
+                             info->ct, info->sr, info->spf, info->isMedia, info->usingScreen]
+                      level:LOGGER_INFO];
+        if (![bridge _isSessionActive:sessionID]) return;
+        if ([bridge.delegate respondsToSelector:@selector(receiverDidSetAudioFormat:sampleRate:framesPerPacket:forSession:)]) {
+            [bridge.delegate receiverDidSetAudioFormat:info->ct
+                                            sampleRate:info->sr
+                                       framesPerPacket:info->spf
+                                            forSession:sessionID];
+        }
+    }
+}
+
+static void _audio_set_volume(void *cls, float volume, raop_connection_t *conn) {
+    @autoreleasepool {
+        AirPlayReceiverBridge *bridge = _bridge(cls);
+        uint64_t sessionID = (uint64_t)(uintptr_t)conn;
+        if (![bridge _isSessionActive:sessionID]) return;
+        if ([bridge.delegate respondsToSelector:@selector(receiverDidSetAudioVolume:forSession:)]) {
+            [bridge.delegate receiverDidSetAudioVolume:volume forSession:sessionID];
+        }
+    }
+}
+
+static void _audio_flush(void *cls, raop_connection_t *conn) {
+    @autoreleasepool {
+        AirPlayReceiverBridge *bridge = _bridge(cls);
+        uint64_t sessionID = (uint64_t)(uintptr_t)conn;
+        if (![bridge _isSessionActive:sessionID]) return;
+        if ([bridge.delegate respondsToSelector:@selector(receiverDidFlushAudioForSession:)]) {
+            [bridge.delegate receiverDidFlushAudioForSession:sessionID];
+        }
+    }
 }
 
 static void _video_process(void *cls, raop_ntp_t *ntp, h264_decode_struct *data, raop_connection_t *conn) {

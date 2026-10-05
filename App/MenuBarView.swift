@@ -30,6 +30,8 @@ struct MenuBarView: View {
 
             Toggle("投屏窗口始终置顶", isOn: $model.alwaysOnTop)
 
+            Toggle("播放投屏设备的声音", isOn: $model.playsAudio)
+
             Toggle(
                 "登录时自动启动",
                 isOn: Binding(
@@ -41,6 +43,7 @@ struct MenuBarView: View {
             Divider()
 
             HStack {
+                Button("使用帮助") { model.showWelcome() }
                 Button("设置…") {
                     openSettingsAction()
                     NSApp.activate(ignoringOtherApps: true)
@@ -134,10 +137,17 @@ struct MenuBarView: View {
                     .foregroundStyle(.red)
                 Button("重新启动") { model.startReceiver() }
             } else {
-                Text("在 iPhone、iPad 或 Mac 的“屏幕镜像”中选择“\(model.configuration.advertisedName)”。")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                Text("如何投屏")
+                    .font(.subheadline.weight(.semibold))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("1. 在 iPhone 或 iPad 上打开控制中心")
+                    Text("2. 轻点“屏幕镜像”")
+                    Text("3. 选择“\(model.configuration.advertisedName)”")
+                    Text("4. 首次连接时输入 Mac 上显示的验证码")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

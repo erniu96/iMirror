@@ -5,6 +5,8 @@ final class SettingsStore {
         static let receiverName = "receiverName"
         static let installationTag = "installationTag"
         static let alwaysOnTop = "alwaysOnTop"
+        static let playsAudio = "playsAudio"
+        static let hasCompletedOnboarding = "hasCompletedOnboarding"
     }
 
     private let defaults: UserDefaults
@@ -35,6 +37,19 @@ final class SettingsStore {
             return defaults.bool(forKey: Key.alwaysOnTop)
         }
         set { defaults.set(newValue, forKey: Key.alwaysOnTop) }
+    }
+
+    var playsAudio: Bool {
+        get {
+            if defaults.object(forKey: Key.playsAudio) == nil { return true }
+            return defaults.bool(forKey: Key.playsAudio)
+        }
+        set { defaults.set(newValue, forKey: Key.playsAudio) }
+    }
+
+    var hasCompletedOnboarding: Bool {
+        get { defaults.bool(forKey: Key.hasCompletedOnboarding) }
+        set { defaults.set(newValue, forKey: Key.hasCompletedOnboarding) }
     }
 
     private func loadOrCreateInstallationTag() -> String {

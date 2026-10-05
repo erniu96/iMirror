@@ -16,6 +16,7 @@ final class AirPlayReceiverService: NSObject {
     private let sinkLock = NSLock()
     private let stateLock = NSLock()
     private var videoSink: ((UInt64, Data) -> Void)?
+    private var audioSink: AudioPlaybackEngine?
     private var acceptsConnectionEvents = false
     private let bridge: AirPlayReceiverBridge
 
@@ -32,6 +33,20 @@ final class AirPlayReceiverService: NSObject {
         sinkLock.lock()
         videoSink = sink
         sinkLock.unlock()
+    }
+
+    func setAudioSink(_ sink: AudioPlaybackEngine) {
+        sinkLock.lock()
+        audioSink = sink
+        sinkLock.unlock()
+    }
+
+    private func currentAudioSink() -> AudioPlaybackEngine? {
+        guard shouldAcceptConnectionEvent() else { return nil }
+        sinkLock.lock()
+        let sink = audioSink
+        sinkLock.unlock()
+        return sink
     }
 
     func start(configuration: ReceiverConfiguration) {
@@ -138,6 +153,34 @@ extension AirPlayReceiverService: AirPlayReceiverBridgeDelegate {
         let sink = videoSink
         sinkLock.unlock()
         sink?(sessionID, data)
+    }
+
+    func receiverDidSetAudioFormat(compressionType: UInt8, sampleRate: UInt32, framesPerPacket: UInt16, sessionID: UInt64) {
+        guard let format = AirPlayAudioFormat(
+            compressionType: compressionType,
+            sampleRate: sampleRate,
+            framesPerPacket: UInt32(framesPerPacket)
+        ) else {
+            NSLog("[AirPlay] Unsupported audio compression type %u", compressionType)
+            return
+        }
+        currentAudioSink()?.configure(sessionID: sessionID, format: format)
+    }
+
+    func receiverDidReceiveAudioData(_ data: Data, sessionID: UInt64) {
+        currentAudioSink()?.enqueue(sessionID: sessionID, packet: data)
+    }
+
+    func receiverDidSetAudioVolume(_ decibels: Float, sessionID: UInt64) {
+        currentAudioSink()?.setVolume(sessionID: sessionID, decibels: decibels)
+    }
+
+    func receiverDidFlushAudio(sessionID: UInt64) {
+        currentAudioSink()?.flush(sessionID: sessionID)
+    }
+
+    func receiverDidStopAudio(sessionID: UInt64) {
+        currentAudioSink()?.endSession(sessionID: sessionID)
     }
 
     func receiverDidDisconnect(sessionID: UInt64) {

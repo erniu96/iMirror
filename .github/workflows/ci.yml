@@ -59,4 +59,15 @@ jobs:
         run: |
           IMIRROR_INSTALL_DIR="$RUNNER_TEMP/Applications" ./install.sh --no-open
           codesign --verify --deep --strict "$RUNNER_TEMP/Applications/iMirror.app"
+      - name: Build disk image
+        run: |
+          python3 -m venv "$RUNNER_TEMP/dmgbuild"
+          "$RUNNER_TEMP/dmgbuild/bin/pip" install --quiet dmgbuild==1.6.7
+          PATH="$RUNNER_TEMP/dmgbuild/bin:$PATH" ./Scripts/make-dmg.sh build/iMirror.app "$RUNNER_TEMP/iMirror.dmg"
+          mount_point="$(mktemp -d)"
+          hdiutil attach -nobrowse -readonly -mountpoint "$mount_point" "$RUNNER_TEMP/iMirror.dmg"
+          trap 'hdiutil detach "$mount_point"' EXIT
+          test "$(readlink "$mount_point/Applications")" = /Applications
+          ls "$mount_point"/.background.*
+          codesign --verify --deep --strict "$mount_point/iMirror.app"
 

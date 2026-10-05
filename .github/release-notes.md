@@ -1,12 +1,13 @@
 ## 下载
 
-下载 `iMirror-<版本>-macOS-universal.zip`。同时支持 Apple Silicon 和 Intel Mac，要求 macOS 14 或更高版本。
+下载 `iMirror-<版本>-macOS-universal.dmg`。同时支持 Apple Silicon 和 Intel Mac，要求 macOS 14 或更高版本。
 
 ## 安装
 
-1. 双击 zip 解压，把 `iMirror.app` 拖到“应用程序”（`/Applications`）文件夹。不要直接在“下载”文件夹里运行，否则“登录时启动”无法正常工作。
-2. 按下方说明完成首次打开。
+1. 双击 dmg 打开，把窗口里的 iMirror 图标拖到右边的“应用程序”文件夹，然后推出磁盘映像。
+2. 从“应用程序”文件夹打开 iMirror，按下方说明完成首次放行。
 3. 首次启动时允许 iMirror 访问本地网络，否则 iPhone 找不到它。
+4. iMirror 会弹出使用引导；之后它常驻在屏幕右上角的菜单栏，没有 Dock 图标。
 
 ## 首次打开：跳过 Gatekeeper 校验
 
@@ -32,7 +33,7 @@ xattr -dr com.apple.quarantine /Applications/iMirror.app
 
 ## 校验
 
-可用 `shasum -a 256 iMirror-*.zip` 核对与 `.sha256` 文件中的值一致。
+可用 `shasum -a 256 iMirror-*.dmg` 核对与 `.sha256` 文件中的值一致。
 
 ## 源代码
 
