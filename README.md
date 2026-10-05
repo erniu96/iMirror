@@ -1,6 +1,10 @@
+<p align="center"><img src="Resources/AppIcon.svg" width="160" alt="iMirror 图标"></p>
+
 # iMirror
 
 iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay 屏幕镜像接收器。应用启动后仅驻留在右上角菜单栏；连接 iPhone、iPad 或 Mac 后，以无标题栏悬浮窗口显示画面。
+
+**[下载最新版本](https://github.com/erniu96/iMirror/releases/latest)** · 需要 macOS 14 或更高版本 · 同时支持 Apple Silicon 和 Intel Mac
 
 ## 已实现
 
@@ -15,11 +19,11 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 - 横竖屏切换时保持视频比例，首帧按 1:1 像素或屏幕可见区域自动适配。
 - 使用 `SMAppService` 支持登录时自动启动。
 - 睡眠时停止网络服务，唤醒后自动恢复。
-- Developer ID 签名、公证和 zip 分发脚本。
+- 推送版本标签后自动构建 universal 应用并发布到 GitHub Release；另有 Developer ID 签名、公证和 zip 分发脚本。
 
 ## 下载安装（无需编译）
 
-从 [Releases](https://github.com/erniu96/iMirror/releases) 下载最新的 `iMirror-<版本>-macOS-universal.zip`，同时支持 Apple Silicon 和 Intel Mac。解压后把 `iMirror.app` 拖到“应用程序”文件夹。
+从 [Releases](https://github.com/erniu96/iMirror/releases/latest) 下载最新的 `iMirror-<版本>-macOS-universal.zip`，同时支持 Apple Silicon 和 Intel Mac。解压后把 `iMirror.app` 拖到“应用程序”文件夹。
 
 发布版使用 ad-hoc 签名，没有经过 Apple 公证，首次打开会被 Gatekeeper 拦截，任选一种方式放行：
 
@@ -72,7 +76,7 @@ GitHub Actions 配置为在 Apple Silicon 和 Intel 的 macOS 15 环境中运行
 ./Scripts/test-protocol.sh
 ```
 
-Linux 上需要 C 编译器和 OpenSSL 3 开发包；这条命令不会构建 macOS 应用。
+Linux 上需要 C 编译器和 OpenSSL 3 开发包；这条命令不会构建 macOS 应用。Linux 桌面用户如需 AirPlay 接收器，可使用本项目协议层的上游 [UxPlay](https://github.com/FDH2/UxPlay)。
 
 ## 使用
 
@@ -81,7 +85,15 @@ Linux 上需要 C 编译器和 OpenSSL 3 开发包；这条命令不会构建 ma
 3. 选择带本机标记的名称（例如 `iMirror-A7K2`），按 Mac 上显示的随机验证码完成配对。
 4. 在设置中可修改接收器基础名称、开启登录时启动、管理配对设备。
 
+iPhone 找不到接收器时，依次检查：macOS 15 及以上首次启动时是否允许了“本地网络”权限（可在“系统设置 → 隐私与安全性 → 本地网络”中重新打开）；iPhone 与 Mac 是否在同一 Wi-Fi；macOS 防火墙是否阻止了 iMirror 的传入连接。
+
 AWDL 没有面向第三方的公开“AirPlay 接收器”框架。iMirror 使用 Apple 公开的 DNS-SD P2P/AWDL 注册标志参与点对点发现，实际 AirPlay/RAOP 会话由开源协议层处理。部分 macOS 版本需要在“系统设置 → 通用 → 隔空投送与接力”中保持“隔空播放接收器”开启，才能让 AWDL 接口处于可用状态。
+
+## 卸载
+
+1. 在设置中关闭“登录时启动”，然后从菜单栏退出 iMirror。
+2. 删除 `/Applications/iMirror.app`。
+3. 如需同时清除接收器身份和已配对设备，删除 `~/Library/Application Support/iMirror`，并运行 `defaults delete com.erniu.imirror` 清除设置。
 
 ## 约定
 
