@@ -21,17 +21,19 @@ enum ReceiverStatus: Equatable {
     var title: String {
         switch self {
         case .stopped:
-            return "接收器已停止"
+            return String(localized: "Receiver stopped")
         case .starting:
-            return "正在启动接收器…"
+            return String(localized: "Starting receiver…")
         case .ready:
-            return "等待设备投屏"
+            return String(localized: "Waiting for a device")
         case .pairing:
-            return "等待输入验证码"
+            return String(localized: "Waiting for the code")
         case .streaming(let sessions):
-            return sessions.count == 1 ? "正在接收投屏" : "正在接收 \(sessions.count) 台设备投屏"
+            return sessions.count == 1
+                ? String(localized: "Receiving mirroring")
+                : String(localized: "Receiving from \(sessions.count) devices")
         case .failed:
-            return "接收器启动失败"
+            return String(localized: "Receiver failed to start")
         }
     }
 }

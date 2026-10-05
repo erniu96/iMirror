@@ -64,6 +64,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: app-*
@@ -99,6 +100,33 @@ jobs:
           shasum -a 256 "$archive" > "$archive.sha256"
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Compose release notes
+        env:
+          VERSION: ${{ steps.package.outputs.version }}
+        run: |
+          set -euo pipefail
+          changes="$(awk -v heading="## [$VERSION]" '
+            index($0, heading) == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found && /^\[[0-9]/ { exit }
+            found { print }
+          ' CHANGELOG.md)"
+          if [[ -z "${changes//[[:space:]]/}" ]]; then
+            echo "CHANGELOG.md has no section for $VERSION" >&2
+            exit 1
+          fi
+          previous="$(git describe --tags --abbrev=0 --match 'v*' "$GITHUB_REF_NAME^" 2>/dev/null || true)"
+          {
+            echo "## 本次更新 / What's new"
+            echo "$changes"
+            if [[ -n "$previous" ]]; then
+              echo
+              echo "完整改动 / Full changes: https://github.com/$GITHUB_REPOSITORY/compare/$previous...$GITHUB_REF_NAME"
+            fi
+            echo
+            cat .github/release-notes.md
+          } > "$RUNNER_TEMP/release-notes.md"
+          cat "$RUNNER_TEMP/release-notes.md"
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -110,10 +138,10 @@ jobs:
             # The release may have been created in the GitHub web UI along with the tag.
             gh release upload "$GITHUB_REF_NAME" "$ARCHIVE" "$ARCHIVE.sha256" --clobber
             if [[ -z "$(gh release view "$GITHUB_REF_NAME" --json body --jq .body)" ]]; then
-              gh release edit "$GITHUB_REF_NAME" --notes-file .github/release-notes.md
+              gh release edit "$GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/release-notes.md"
             fi
           else
             gh release create "$GITHUB_REF_NAME" "$ARCHIVE" "$ARCHIVE.sha256" \
               --title "iMirror $VERSION" \
-              --notes-file .github/release-notes.md
+              --notes-file "$RUNNER_TEMP/release-notes.md"
           fi

@@ -57,6 +57,10 @@ mkdir -p "$MACOS_DIR" "$RESOURCES_DIR" "$FRAMEWORKS_DIR"
 cp "$PROJECT_DIR/Resources/Info.plist" "$CONTENTS/Info.plist"
 /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $MINIMUM_MACOS" "$CONTENTS/Info.plist"
 cp "$PROJECT_DIR/Resources/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
+for localization in "$PROJECT_DIR"/Resources/*.lproj(N); do
+    cp -R "$localization" "$RESOURCES_DIR/"
+done
+plutil -lint "$RESOURCES_DIR"/*.lproj/*.strings >/dev/null
 cp "$PROJECT_DIR/COPYING" "$RESOURCES_DIR/GPL-3.0.txt"
 cp "$PROJECT_DIR/ThirdParty/NOTICE.md" "$RESOURCES_DIR/ThirdParty-NOTICE.md"
 cp "$PROJECT_DIR"/ThirdParty/*.txt "$RESOURCES_DIR/"

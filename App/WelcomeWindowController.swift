@@ -15,7 +15,7 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "欢迎使用 iMirror"
+        window.title = String(localized: "Welcome to iMirror")
         window.titlebarAppearsTransparent = true
         window.isReleasedWhenClosed = false
         super.init(window: window)
@@ -52,39 +52,39 @@ private struct WelcomeView: View {
                 Image(nsImage: NSApp.applicationIconImage)
                     .resizable()
                     .frame(width: 84, height: 84)
-                Text("欢迎使用 iMirror")
+                Text("Welcome to iMirror")
                     .font(.title.bold())
-                Text("把 iPhone、iPad 或另一台 Mac 的屏幕投到这台 Mac 上")
+                Text("Mirror an iPhone, iPad or another Mac to this Mac")
                     .foregroundStyle(.secondary)
             }
             .padding(.top, 34)
             .padding(.bottom, 22)
 
             VStack(alignment: .leading, spacing: 16) {
-                step(1, title: "iMirror 在右上角的菜单栏里") {
+                step(1, title: "iMirror lives in the menu bar") {
                     HStack(spacing: 6) {
-                        Text("找到这个图标")
+                        Text("Look for this icon")
                         Image(nsImage: MenuBarIcon.image)
                             .renderingMode(.template)
                             .foregroundStyle(.primary)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 3)
                             .background(.quaternary, in: RoundedRectangle(cornerRadius: 5))
-                        Text("，点它可以查看状态和设置。")
+                        Text("and click it for status and settings.")
                     }
-                    Text("iMirror 没有 Dock 图标，这是正常的。")
+                    Text("iMirror has no Dock icon; that’s expected.")
                 }
-                step(2, title: "在 iPhone 或 iPad 上打开“屏幕镜像”") {
-                    Text("从屏幕右上角向下轻扫打开控制中心，轻点“屏幕镜像”按钮。在 Mac 上则点菜单栏的控制中心。")
+                step(2, title: "Open Screen Mirroring on your iPhone or iPad") {
+                    Text("Swipe down from the top-right corner to open Control Center, then tap Screen Mirroring. On a Mac, use Control Center in the menu bar.")
                 }
-                step(3, title: "选择“\(model.configuration.advertisedName)”") {
-                    Text("设备和这台 Mac 需要连接同一个 Wi-Fi。如果 Mac 询问是否允许 iMirror 访问本地网络，请点“允许”。")
+                step(3, title: "Choose “\(model.configuration.advertisedName)”") {
+                    Text("The device and this Mac must be on the same Wi-Fi network. If macOS asks whether iMirror may access the local network, click Allow.")
                 }
-                step(4, title: "第一次连接时输入验证码") {
-                    Text("Mac 上会弹出四位数字，在设备上输入即可。之后同一台设备再连接就不需要验证码了。")
+                step(4, title: "Enter the code the first time") {
+                    Text("A four-digit code appears on this Mac; enter it on the device. The same device won’t need a code again.")
                 }
-                step(5, title: "调整投屏窗口") {
-                    Text("把鼠标移到画面上，左上角会出现停止投屏、置顶和全屏按钮。手机的声音会从 Mac 播放。")
+                step(5, title: "Use the mirroring window") {
+                    Text("Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner. Sound from the device plays on this Mac.")
                 }
             }
             .padding(.horizontal, 36)
@@ -93,14 +93,14 @@ private struct WelcomeView: View {
 
             VStack(spacing: 12) {
                 Toggle(
-                    "登录时自动启动 iMirror",
+                    "Open iMirror at Login",
                     isOn: Binding(get: { model.launchAtLogin }, set: model.setLaunchAtLogin)
                 )
                 .toggleStyle(.checkbox)
-                Button("开始使用", action: onDone)
+                Button("Get Started", action: onDone)
                     .keyboardShortcut(.defaultAction)
                     .controlSize(.large)
-                Text("随时可以在菜单栏的 iMirror 菜单中点“使用帮助”再次查看。")
+                Text("You can show this guide again any time with Help in the iMirror menu.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -111,7 +111,7 @@ private struct WelcomeView: View {
 
     private func step<Content: View>(
         _ number: Int,
-        title: String,
+        title: LocalizedStringKey,
         @ViewBuilder detail: () -> Content
     ) -> some View {
         HStack(alignment: .top, spacing: 12) {

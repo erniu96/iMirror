@@ -221,8 +221,8 @@ final class MetalVideoView: MTKView, MTKViewDelegate {
 
         var errorDescription: String? {
             switch self {
-            case .metalUnavailable: return "当前 Mac 不支持 Metal。"
-            case .bufferCreationFailed: return "无法创建 Metal 顶点缓冲区。"
+            case .metalUnavailable: return String(localized: "This Mac doesn’t support Metal.")
+            case .bufferCreationFailed: return String(localized: "Couldn’t create a Metal vertex buffer.")
             }
         }
     }

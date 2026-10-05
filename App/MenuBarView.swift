@@ -20,7 +20,7 @@ struct MenuBarView: View {
                 .frame(maxHeight: 290)
 
                 if sessions.count > 1 {
-                    Button("显示全部窗口") { model.showAllMirrorWindows() }
+                    Button("Show All Windows") { model.showAllMirrorWindows() }
                 }
             } else {
                 connectionHint
@@ -28,12 +28,12 @@ struct MenuBarView: View {
 
             Divider()
 
-            Toggle("投屏窗口始终置顶", isOn: $model.alwaysOnTop)
+            Toggle("Keep Mirroring Windows on Top", isOn: $model.alwaysOnTop)
 
-            Toggle("播放投屏设备的声音", isOn: $model.playsAudio)
+            Toggle("Play Sound from Mirrored Devices", isOn: $model.playsAudio)
 
             Toggle(
-                "登录时自动启动",
+                "Open at Login",
                 isOn: Binding(
                     get: { model.launchAtLogin },
                     set: model.setLaunchAtLogin
@@ -43,14 +43,14 @@ struct MenuBarView: View {
             Divider()
 
             HStack {
-                Button("使用帮助") { model.showWelcome() }
-                Button("设置…") {
+                Button("Help") { model.showWelcome() }
+                Button("Settings…") {
                     openSettingsAction()
                     NSApp.activate(ignoringOtherApps: true)
                 }
                     .keyboardShortcut(",")
                 Spacer()
-                Button("退出") { model.quit() }
+                Button("Quit") { model.quit() }
                     .keyboardShortcut("q")
             }
         }
@@ -63,7 +63,7 @@ struct MenuBarView: View {
                 set: { if !$0 { model.alertMessage = nil } }
             )
         ) {
-            Button("好", role: .cancel) { model.alertMessage = nil }
+            Button("OK", role: .cancel) { model.alertMessage = nil }
         } message: {
             Text(model.alertMessage ?? "")
         }
@@ -105,8 +105,8 @@ struct MenuBarView: View {
                 Spacer()
             }
             HStack {
-                Button("显示窗口") { model.showMirrorWindow(sessionID: session.id) }
-                Button("全屏") { model.toggleFullScreen(sessionID: session.id) }
+                Button("Show Window") { model.showMirrorWindow(sessionID: session.id) }
+                Button("Full Screen") { model.toggleFullScreen(sessionID: session.id) }
                 Spacer()
             }
         }
@@ -128,22 +128,22 @@ struct MenuBarView: View {
                 Text(code)
                     .font(.system(size: 28, weight: .semibold, design: .monospaced))
                     .textSelection(.enabled)
-                Text("请在发起投屏的 Apple 设备上输入此验证码。")
+                Text("Enter this code on the Apple device that is mirroring.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else if case .failed(let message) = model.status {
                 Text(message)
                     .font(.caption)
                     .foregroundStyle(.red)
-                Button("重新启动") { model.startReceiver() }
+                Button("Restart") { model.startReceiver() }
             } else {
-                Text("如何投屏")
+                Text("How to mirror")
                     .font(.subheadline.weight(.semibold))
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("1. 在 iPhone 或 iPad 上打开控制中心")
-                    Text("2. 轻点“屏幕镜像”")
-                    Text("3. 选择“\(model.configuration.advertisedName)”")
-                    Text("4. 首次连接时输入 Mac 上显示的验证码")
+                    Text("1. Open Control Center on your iPhone or iPad")
+                    Text("2. Tap Screen Mirroring")
+                    Text("3. Choose “\(model.configuration.advertisedName)”")
+                    Text("4. The first time, enter the code shown on this Mac")
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)

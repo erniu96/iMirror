@@ -2,6 +2,8 @@
 
 # iMirror
 
+简体中文 | [English](README.en.md)
+
 iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay 屏幕镜像接收器。应用启动后仅驻留在右上角菜单栏；连接 iPhone、iPad 或 Mac 后，以无标题栏悬浮窗口显示画面。
 
 **[下载最新版本](https://github.com/erniu96/iMirror/releases/latest)** · 需要 macOS 14 或更高版本 · 同时支持 Apple Silicon 和 Intel Mac
@@ -20,6 +22,7 @@ iMirror 是使用 SwiftUI 与 macOS 原生媒体栈构建的菜单栏 AirPlay �
 - 播放投屏设备的声音（AAC-ELD、AAC-LC、ALAC、PCM），跟随设备音量，可在菜单中关闭。
 - 首次启动显示使用引导；应用已在运行时再次打开也会弹出引导，菜单中可随时点“使用帮助”。
 - 菜单栏图标是应用图标的单色版本，自动适配浅色和深色菜单栏。
+- 界面支持简体中文和英文，跟随系统语言，也可在“系统设置 → 通用 → 语言与地区 → App”中单独设置；欢迎[贡献更多语言](Documentation/LOCALIZATION.md)。
 - 使用 `SMAppService` 支持登录时自动启动。
 - 睡眠时停止网络服务，唤醒后自动恢复。
 - 推送版本标签后自动构建 universal 应用并发布到 GitHub Release；另有 Developer ID 签名、公证和 zip 分发脚本。
@@ -67,7 +70,11 @@ bash command.txt
 
 ## 发布
 
-推送与 `Info.plist` 中 `CFBundleShortVersionString` 一致的标签（例如 `v1.0.0`）后，`.github/workflows/release.yml` 会在 Apple Silicon 和 Intel 上分别构建并运行全部测试，合并成 universal 应用，以 ad-hoc 签名，用 `Scripts/make-dmg.sh` 制作拖拽安装的 dmg，连同 SHA-256 校验文件发布到 GitHub Release，说明文字取自 `.github/release-notes.md`。需要正式签名和公证的版本请按 [分发文档](Documentation/DISTRIBUTION.md) 在本机打包。
+先在 [CHANGELOG.md](CHANGELOG.md) 顶部写好新版本的改动，再推送与 `Info.plist` 中 `CFBundleShortVersionString` 一致的标签（例如 `v1.2.0`）。`.github/workflows/release.yml` 会在 Apple Silicon 和 Intel 上分别构建并运行全部测试，合并成 universal 应用，以 ad-hoc 签名，用 `Scripts/make-dmg.sh` 制作拖拽安装的 dmg，连同 SHA-256 校验文件发布到 GitHub Release。Release 说明由 CHANGELOG 中该版本的内容、与上一版本的对比链接和 `.github/release-notes.md` 的安装说明组成；CHANGELOG 缺少该版本时发布会失败。需要正式签名和公证的版本请按 [分发文档](Documentation/DISTRIBUTION.md) 在本机打包。
+
+## 翻译
+
+界面文字在 `Resources/<语言代码>.lproj/Localizable.strings`，代码中以英文原文作为 key。添加语言只需复制 `en.lproj`、翻译、在 `Info.plist` 的 `CFBundleLocalizations` 中登记，然后运行 `python3 Scripts/check-localizations.py` 检查遗漏。详见 [翻译指南](Documentation/LOCALIZATION.md)。
 
 ## 测试
 

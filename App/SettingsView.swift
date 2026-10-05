@@ -6,42 +6,46 @@ struct SettingsView: View {
     @State private var confirmForgetDevices = false
     @State private var confirmResetIdentity = false
 
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+    }
+
     var body: some View {
         TabView {
             Form {
-                Section("AirPlay 接收器") {
-                    TextField("接收器名称", text: $receiverName)
-                    LabeledContent("屏幕镜像中显示") {
+                Section("AirPlay Receiver") {
+                    TextField("Receiver Name", text: $receiverName)
+                    LabeledContent("Shown in Screen Mirroring") {
                         Text(previewName)
                             .foregroundStyle(.secondary)
                             .textSelection(.enabled)
                     }
-                    Text("每次新设备发起配对时生成新的四位验证码，不会保存固定验证码。")
+                    Text("A new four-digit code is generated each time a new device pairs; no fixed code is stored.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Button("应用并重启接收器") {
+                    Button("Apply and Restart Receiver") {
                         model.applyReceiverName(receiverName)
                     }
                     .disabled(receiverName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
 
-                Section("窗口") {
-                    Toggle("投屏窗口始终置顶", isOn: $model.alwaysOnTop)
-                    Text("投屏窗口没有标题栏；把鼠标移入窗口后，会在左上角显示停止投屏、置顶和全屏按钮。")
+                Section("Windows") {
+                    Toggle("Keep Mirroring Windows on Top", isOn: $model.alwaysOnTop)
+                    Text("Mirroring windows have no title bar. Move the pointer over a window to show the stop, pin and full-screen buttons in its top-left corner.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
 
-                Section("声音") {
-                    Toggle("播放投屏设备的声音", isOn: $model.playsAudio)
-                    Text("音量跟随投屏设备；在设备上调节音量即可。")
+                Section("Sound") {
+                    Toggle("Play Sound from Mirrored Devices", isOn: $model.playsAudio)
+                    Text("Volume follows the mirroring device; adjust it there.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
 
-                Section("启动") {
+                Section("Startup") {
                     Toggle(
-                        "登录时自动启动",
+                        "Open at Login",
                         isOn: Binding(
                             get: { model.launchAtLogin },
                             set: model.setLaunchAtLogin
@@ -50,54 +54,54 @@ struct SettingsView: View {
                 }
             }
             .padding()
-            .tabItem { Label("通用", systemImage: "gearshape") }
+            .tabItem { Label("General", systemImage: "gearshape") }
 
             Form {
-                Section("已配对设备") {
-                    Button("忘记所有设备", role: .destructive) {
+                Section("Paired Devices") {
+                    Button("Forget All Devices", role: .destructive) {
                         confirmForgetDevices = true
                     }
-                    Text("已验证设备下次连接时可跳过验证码。")
+                    Text("Verified devices can reconnect without a code.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
 
-                Section("接收器身份") {
-                    Button("重置接收器身份", role: .destructive) {
+                Section("Receiver Identity") {
+                    Button("Reset Receiver Identity", role: .destructive) {
                         confirmResetIdentity = true
                     }
-                    Text("重置后，所有设备都需要重新验证。")
+                    Text("After a reset, every device must verify again.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
             }
             .padding()
-            .tabItem { Label("配对", systemImage: "key.fill") }
+            .tabItem { Label("Pairing", systemImage: "key.fill") }
 
             VStack(spacing: 14) {
                 Image(nsImage: NSApp.applicationIconImage)
                     .resizable()
                     .frame(width: 96, height: 96)
-                Text("iMirror")
+                Text(verbatim: "iMirror")
                     .font(.title.bold())
-                Text("版本 \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")")
+                Text("Version \(appVersion)")
                     .foregroundStyle(.secondary)
-                Text("macOS 原生菜单栏 AirPlay 屏幕镜像接收器")
+                Text("A native macOS menu bar AirPlay screen mirroring receiver")
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
-            .tabItem { Label("关于", systemImage: "info.circle") }
+            .tabItem { Label("About", systemImage: "info.circle") }
         }
         .frame(width: 480, height: 440)
         .onAppear {
             receiverName = model.configuration.baseName
         }
-        .confirmationDialog("忘记所有已配对设备？", isPresented: $confirmForgetDevices) {
-            Button("忘记所有设备", role: .destructive) { model.forgetTrustedDevices() }
+        .confirmationDialog("Forget all paired devices?", isPresented: $confirmForgetDevices) {
+            Button("Forget All Devices", role: .destructive) { model.forgetTrustedDevices() }
         }
-        .confirmationDialog("重置接收器身份？", isPresented: $confirmResetIdentity) {
-            Button("重置并重启", role: .destructive) { model.resetReceiverIdentity() }
+        .confirmationDialog("Reset the receiver identity?", isPresented: $confirmResetIdentity) {
+            Button("Reset and Restart", role: .destructive) { model.resetReceiverIdentity() }
         }
         .alert(
             "iMirror",
@@ -106,7 +110,7 @@ struct SettingsView: View {
                 set: { if !$0 { model.alertMessage = nil } }
             )
         ) {
-            Button("好", role: .cancel) { model.alertMessage = nil }
+            Button("OK", role: .cancel) { model.alertMessage = nil }
         } message: {
             Text(model.alertMessage ?? "")
         }

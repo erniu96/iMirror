@@ -35,9 +35,9 @@ struct ReceiverConfiguration: Equatable {
         var errorDescription: String? {
             switch self {
             case .invalidName:
-                return "接收器名称不能为空，且附加设备标记后最多 63 个 UTF-8 字节。"
+                return String(localized: "The receiver name can’t be empty and, with the device tag added, must fit in 63 UTF-8 bytes.")
             case .invalidInstallationTag:
-                return "本机投屏标记无效。"
+                return String(localized: "The device tag is invalid.")
             }
         }
     }

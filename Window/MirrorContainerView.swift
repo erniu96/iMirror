@@ -87,11 +87,11 @@ private final class HoverControlsView: NSVisualEffectView {
     private let pinButton: NSButton
 
     init() {
-        let closeButton = Self.makeButton(symbol: "xmark", tooltip: "停止此设备投屏")
-        pinButton = Self.makeButton(symbol: "pin.fill", tooltip: "取消置顶")
+        let closeButton = Self.makeButton(symbol: "xmark", tooltip: String(localized: "Stop Mirroring This Device"))
+        pinButton = Self.makeButton(symbol: "pin.fill", tooltip: String(localized: "Unpin"))
         let fullScreenButton = Self.makeButton(
             symbol: "arrow.up.left.and.arrow.down.right",
-            tooltip: "进入或退出全屏"
+            tooltip: String(localized: "Enter or Exit Full Screen")
         )
 
         super.init(frame: .zero)
@@ -129,7 +129,7 @@ private final class HoverControlsView: NSVisualEffectView {
 
     func setPinned(_ pinned: Bool) {
         pinButton.image = NSImage(systemSymbolName: pinned ? "pin.fill" : "pin", accessibilityDescription: nil)
-        pinButton.toolTip = pinned ? "取消置顶" : "保持置顶"
+        pinButton.toolTip = pinned ? String(localized: "Unpin") : String(localized: "Keep on Top")
     }
 
     func setVisible(_ visible: Bool, animated: Bool) {

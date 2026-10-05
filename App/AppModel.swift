@@ -139,7 +139,7 @@ final class AppModel: ObservableObject {
             launchAtLogin = loginItemService.isEnabled
         } catch {
             launchAtLogin = loginItemService.isEnabled
-            alertMessage = "无法修改开机自启动：\(error.localizedDescription)"
+            alertMessage = String(localized: "Couldn’t change Open at Login: \(error.localizedDescription)")
         }
     }
 
@@ -147,7 +147,7 @@ final class AppModel: ObservableObject {
         do {
             try pairingStore?.forgetTrustedDevices()
         } catch {
-            alertMessage = "无法清除配对设备：\(error.localizedDescription)"
+            alertMessage = String(localized: "Couldn’t forget paired devices: \(error.localizedDescription)")
         }
     }
 
@@ -158,7 +158,7 @@ final class AppModel: ObservableObject {
             endAllSessions()
             receiverService.restart(configuration: configuration)
         } catch {
-            alertMessage = "无法重置接收器身份：\(error.localizedDescription)"
+            alertMessage = String(localized: "Couldn’t reset the receiver identity: \(error.localizedDescription)")
         }
     }
 
@@ -230,7 +230,7 @@ final class AppModel: ObservableObject {
             windowController.beginSession(cascadeIndex: sessionOrder.count - 1)
         } catch {
             videoRouter.detach(sessionID: sessionID)
-            alertMessage = "无法为 \(device.name) 创建投屏窗口：\(error.localizedDescription)"
+            alertMessage = String(localized: "Couldn’t open a mirroring window for \(device.name): \(error.localizedDescription)")
         }
     }
 

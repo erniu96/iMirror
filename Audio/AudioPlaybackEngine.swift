@@ -164,7 +164,7 @@ final class AudioPlaybackEngine {
             lastStartFailure = Date()
             if !hasReportedStartFailure {
                 hasReportedStartFailure = true
-                report("无法启动音频输出：\(error.localizedDescription)")
+                report(String(localized: "Couldn’t start audio output: \(error.localizedDescription)"))
             }
         }
     }
