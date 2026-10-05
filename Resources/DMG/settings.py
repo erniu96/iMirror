@@ -10,7 +10,6 @@ format = "UDZO"
 filesystem = "HFS+"
 files = [app]
 symlinks = {"Applications": "/Applications"}
-hide_extensions = [app_name]
 
 background = defines["background"]  # noqa: F821
 window_rect = ((200, 120), (640, 400))
