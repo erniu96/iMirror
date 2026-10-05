@@ -42,6 +42,8 @@ bash command.txt
 
 应用产物为 `build/iMirror.app`。本地构建使用 ad-hoc 签名，每次重新构建签名都会变化，系统可能再次询问本地网络或防火墙权限，属于正常现象。给朋友分发前必须按 [分发文档](Documentation/DISTRIBUTION.md) 完成 Developer ID 签名和公证。
 
+应用图标的源文件是 `Resources/AppIcon.svg`。修改后运行 `node Scripts/make-app-icon.mjs` 重新生成 `Resources/AppIcon.icns`（需要 Node 和 Playwright Chromium），并一起提交。
+
 ## 测试
 
 `./build.sh test` 会完整构建应用，检查签名，运行协议测试、Swift 单元测试，以及两路独立的 H.264 解码测试。默认视频样本由程序生成，存放在 `Tests/Fixtures/`，无需准备本机录像；可用 `IMIRROR_VIDEO_FIXTURE` 指定其他 Annex-B H.264 文件，文件不存在时测试会失败。

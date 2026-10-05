@@ -6,6 +6,8 @@
 	<string>zh_CN</string>
 	<key>CFBundleDisplayName</key>
 	<string>iMirror</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundleExecutable</key>
 	<string>iMirror</string>
 	<key>CFBundleIdentifier</key>

@@ -76,6 +76,8 @@ as_installer mkdir -p "$INSTALL_DIR"
 # ditto merges into an existing bundle, so remove the old copy to avoid stale files.
 as_installer rm -rf -- "$TARGET_APP"
 as_installer ditto "$SOURCE_APP" "$TARGET_APP"
+# Prompt Finder and the Dock to pick up a changed icon.
+as_installer touch "$TARGET_APP"
 codesign --verify --deep --strict "$TARGET_APP"
 
 printf '已安装：%s\n' "$TARGET_APP"
