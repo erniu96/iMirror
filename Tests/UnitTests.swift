@@ -31,6 +31,7 @@ private struct UnitTests {
         testVideoSessionBufferLimit()
         testVideoSessionCloseAndReopen()
         testOrientationWindowSizing()
+        testAspectFitViewport()
 
         if failures > 0 {
             print("测试失败：\(failures) 项")
@@ -155,6 +156,36 @@ private struct UnitTests {
         expect(oldSink.bytes.isEmpty && replacement.bytes.isEmpty, "关闭全部连接后丢弃旧连接的缓冲和迟到数据")
         router.route(sessionID: 66, accessUnit: Data([4]))
         expect(replacement.bytes == [4], "重新注册的连接可以接收新数据")
+    }
+
+    private static func testAspectFitViewport() {
+        // Portrait iPhone on a maximized 16:10 window: pillarboxed, centered.
+        let portrait = MirrorWindowSizing.aspectFitRect(
+            content: CGSize(width: 1170, height: 2532),
+            in: CGSize(width: 2880, height: 1800)
+        )
+        expect(portrait.height == 1800, "竖屏画面在最大化窗口中按高度铺满")
+        expect(abs(portrait.width / portrait.height - 1170.0 / 2532.0) < 0.002, "最大化时保持视频宽高比，不拉伸")
+        expect(abs(portrait.midX - 1440) <= 1, "竖屏画面在窗口中水平居中")
+
+        // Landscape video on a taller window: letterboxed.
+        let landscape = MirrorWindowSizing.aspectFitRect(
+            content: CGSize(width: 1920, height: 1080),
+            in: CGSize(width: 1000, height: 1000)
+        )
+        expect(landscape.width == 1000 && landscape.height == 563, "横屏画面在高窗口中按宽度铺满")
+        expect(landscape.minY == 218, "横屏画面在窗口中垂直居中")
+
+        let exact = MirrorWindowSizing.aspectFitRect(
+            content: CGSize(width: 1280, height: 720),
+            in: CGSize(width: 640, height: 360)
+        )
+        expect(exact == CGRect(x: 0, y: 0, width: 640, height: 360), "比例一致时画面铺满整个窗口")
+        expect(
+            MirrorWindowSizing.aspectFitRect(content: .zero, in: CGSize(width: 100, height: 50))
+                == CGRect(x: 0, y: 0, width: 100, height: 50),
+            "尚无视频尺寸时使用整个窗口"
+        )
     }
 
     private static func testOrientationWindowSizing() {
