@@ -18,6 +18,11 @@ Each release page includes the matching section below. Before tagging a release,
 - Release 说明会列出与上一版本相比的改动；dmg 窗口的说明改为中英双语。
   Release notes now list the changes since the previous version; the DMG window instructions are bilingual.
 
+### 修复 / Fixed
+
+- 全屏、最大化或使用窗口平铺时，画面不再被拉伸，而是保持比例居中显示，空白处填充黑色。
+  The picture keeps its aspect ratio, centered with black bars, instead of stretching in full screen, when maximized or when the window is tiled.
+
 ## [1.1.0] - 2026-10-05
 
 ### 新增 / Added

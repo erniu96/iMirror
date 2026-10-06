@@ -121,6 +121,21 @@ final class MetalVideoView: MTKView, MTKViewDelegate {
               let commandBuffer = commandQueue.makeCommandBuffer(),
               let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
 
+        let viewport = MirrorWindowSizing.aspectFitRect(
+            content: CGSize(
+                width: CVPixelBufferGetWidth(currentVideoFrame.pixelBuffer),
+                height: CVPixelBufferGetHeight(currentVideoFrame.pixelBuffer)
+            ),
+            in: drawableSize
+        )
+        encoder.setViewport(MTLViewport(
+            originX: Double(viewport.minX),
+            originY: Double(viewport.minY),
+            width: Double(viewport.width),
+            height: Double(viewport.height),
+            znear: 0,
+            zfar: 1
+        ))
         encoder.setRenderPipelineState(pipelineState)
         encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         encoder.setFragmentTexture(yTexture, index: 0)
