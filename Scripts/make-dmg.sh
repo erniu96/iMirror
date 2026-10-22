@@ -11,13 +11,15 @@ if [[ ! -d "$APP_BUNDLE" ]]; then
     print -u2 "找不到应用：$APP_BUNDLE"
     exit 1
 fi
-if ! python3 -c 'import dmgbuild' >/dev/null 2>&1; then
+# IMIRROR_PYTHON picks the interpreter that has dmgbuild, e.g. a venv's python3.
+readonly PYTHON="${IMIRROR_PYTHON:-python3}"
+if ! "$PYTHON" -c 'import dmgbuild' >/dev/null 2>&1; then
     print -u2 "缺少 dmgbuild。请运行：python3 -m pip install dmgbuild"
     exit 1
 fi
 
 rm -f -- "$OUTPUT"
-python3 -m dmgbuild \
+"$PYTHON" -m dmgbuild \
     -s "$PROJECT_DIR/Resources/DMG/settings.py" \
     -D app="${APP_BUNDLE:A}" \
     -D background="$PROJECT_DIR/Resources/DMG/background.png" \

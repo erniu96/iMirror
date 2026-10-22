@@ -2,23 +2,24 @@
    To add a language, copy this file into <code>.lproj and translate the right-hand side.
    See Documentation/LOCALIZATION.md. */
 
+
+/* Menu bar menu */
+"Receiver Name: %@" = "Receiver Name: %@";
+"Show Window" = "Show Window";
+"Enter or Exit Full Screen" = "Enter or Exit Full Screen";
+"Stop Mirroring" = "Stop Mirroring";
 "Show All Windows" = "Show All Windows";
+"Show Pairing Code (%@)" = "Show Pairing Code (%@)";
+"Restart Receiver" = "Restart Receiver";
+"In Screen Mirroring, choose “%@”" = "In Screen Mirroring, choose “%@”";
 "Keep Mirroring Windows on Top" = "Keep Mirroring Windows on Top";
 "Play Sound from Mirrored Devices" = "Play Sound from Mirrored Devices";
-"Open at Login" = "Open at Login";
-"Help" = "Help";
+"About iMirror" = "About iMirror";
+"Getting Started Guide" = "Getting Started Guide";
 "Settings…" = "Settings…";
-"Quit" = "Quit";
-"OK" = "OK";
-"Show Window" = "Show Window";
-"Full Screen" = "Full Screen";
-"Enter this code on the Apple device that is mirroring." = "Enter this code on the Apple device that is mirroring.";
-"Restart" = "Restart";
-"How to mirror" = "How to mirror";
-"1. Open Control Center on your iPhone or iPad" = "1. Open Control Center on your iPhone or iPad";
-"2. Tap Screen Mirroring" = "2. Tap Screen Mirroring";
-"3. Choose “%@”" = "3. Choose “%@”";
-"4. The first time, enter the code shown on this Mac" = "4. The first time, enter the code shown on this Mac";
+"Quit iMirror" = "Quit iMirror";
+
+/* Receiver status */
 "Receiver stopped" = "Receiver stopped";
 "Starting receiver…" = "Starting receiver…";
 "Waiting for a device" = "Waiting for a device";
@@ -26,39 +27,41 @@
 "Receiving mirroring" = "Receiving mirroring";
 "Receiving from %lld devices" = "Receiving from %lld devices";
 "Receiver failed to start" = "Receiver failed to start";
-"iMirror Code" = "iMirror Code";
-"Enter on the mirroring device" = "Enter on the mirroring device";
+
+/* Pairing code window */
+"Pairing Code" = "Pairing Code";
+"Enter this code on the device that is mirroring" = "Enter this code on the device that is mirroring";
 "This window closes once the device is verified." = "This window closes once the device is verified.";
+
+/* Settings */
 "General" = "General";
-"AirPlay Receiver" = "AirPlay Receiver";
-"Receiver Name" = "Receiver Name";
-"Shown in Screen Mirroring" = "Shown in Screen Mirroring";
-"A new four-digit code is generated each time a new device pairs; no fixed code is stored." = "A new four-digit code is generated each time a new device pairs; no fixed code is stored.";
-"Apply and Restart Receiver" = "Apply and Restart Receiver";
-"Windows" = "Windows";
-"Mirroring windows have no title bar. Move the pointer over a window to show the stop, pin and full-screen buttons in its top-left corner." = "Mirroring windows have no title bar. Move the pointer over a window to show the stop, pin and full-screen buttons in its top-left corner.";
-"Sound" = "Sound";
-"Volume follows the mirroring device; adjust it there." = "Volume follows the mirroring device; adjust it there.";
-"Startup" = "Startup";
 "Pairing" = "Pairing";
-"Paired Devices" = "Paired Devices";
-"Forget All Devices" = "Forget All Devices";
-"Verified devices can reconnect without a code." = "Verified devices can reconnect without a code.";
-"Receiver Identity" = "Receiver Identity";
-"Reset Receiver Identity" = "Reset Receiver Identity";
+"Receiver Name:" = "Receiver Name:";
+"Shown as:" = "Shown as:";
+"Apply and Restart Receiver" = "Apply and Restart Receiver";
+"This is the name to choose in Screen Mirroring on your iPhone or iPad. The tag after it tells your Macs apart." = "This is the name to choose in Screen Mirroring on your iPhone or iPad. The tag after it tells your Macs apart.";
+"Keep mirroring windows on top" = "Keep mirroring windows on top";
+"Mirroring windows have no title bar. Move the pointer over a window to show the stop, pin and full-screen buttons in its top-left corner." = "Mirroring windows have no title bar. Move the pointer over a window to show the stop, pin and full-screen buttons in its top-left corner.";
+"Play sound from mirrored devices" = "Play sound from mirrored devices";
+"Volume follows the mirroring device; adjust it there." = "Volume follows the mirroring device; adjust it there.";
+"Open iMirror at login" = "Open iMirror at login";
+"A new four-digit code is generated each time a new device pairs; no fixed code is stored. Verified devices can reconnect without a code." = "A new four-digit code is generated each time a new device pairs; no fixed code is stored. Verified devices can reconnect without a code.";
+"Forget All Devices…" = "Forget All Devices…";
+"Reset Receiver Identity…" = "Reset Receiver Identity…";
 "After a reset, every device must verify again." = "After a reset, every device must verify again.";
-"About" = "About";
-"Version %@" = "Version %@";
-"A native macOS menu bar AirPlay screen mirroring receiver" = "A native macOS menu bar AirPlay screen mirroring receiver";
 "Forget all paired devices?" = "Forget all paired devices?";
+"Forget All Devices" = "Forget All Devices";
+"Each device will need a new code the next time it mirrors to this Mac." = "Each device will need a new code the next time it mirrors to this Mac.";
 "Reset the receiver identity?" = "Reset the receiver identity?";
 "Reset and Restart" = "Reset and Restart";
+"The receiver restarts, current mirroring stops and every device must verify again. This can’t be undone." = "The receiver restarts, current mirroring stops and every device must verify again. This can’t be undone.";
+"Cancel" = "Cancel";
+
+/* Getting started guide */
 "Welcome to iMirror" = "Welcome to iMirror";
 "Mirror an iPhone, iPad or another Mac to this Mac" = "Mirror an iPhone, iPad or another Mac to this Mac";
 "iMirror lives in the menu bar" = "iMirror lives in the menu bar";
-"Look for this icon" = "Look for this icon";
-"and click it for status and settings." = "and click it for status and settings.";
-"iMirror has no Dock icon; that’s expected." = "iMirror has no Dock icon; that’s expected.";
+"Click %@ in the menu bar for status and settings. iMirror has no Dock icon; that’s expected." = "Click %@ in the menu bar for status and settings. iMirror has no Dock icon; that’s expected.";
 "Open Screen Mirroring on your iPhone or iPad" = "Open Screen Mirroring on your iPhone or iPad";
 "Swipe down from the top-right corner to open Control Center, then tap Screen Mirroring. On a Mac, use Control Center in the menu bar." = "Swipe down from the top-right corner to open Control Center, then tap Screen Mirroring. On a Mac, use Control Center in the menu bar.";
 "Choose “%@”" = "Choose “%@”";
@@ -66,18 +69,29 @@
 "Enter the code the first time" = "Enter the code the first time";
 "A four-digit code appears on this Mac; enter it on the device. The same device won’t need a code again." = "A four-digit code appears on this Mac; enter it on the device. The same device won’t need a code again.";
 "Use the mirroring window" = "Use the mirroring window";
-"Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner. Sound from the device plays on this Mac." = "Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner. Sound from the device plays on this Mac.";
-"Open iMirror at Login" = "Open iMirror at Login";
+"Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner, or press Command-W to stop and Control-Command-F for full screen. Sound from the device plays on this Mac." = "Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner, or press Command-W to stop and Control-Command-F for full screen. Sound from the device plays on this Mac.";
 "Get Started" = "Get Started";
-"You can show this guide again any time with Help in the iMirror menu." = "You can show this guide again any time with Help in the iMirror menu.";
-"Stop Mirroring This Device" = "Stop Mirroring This Device";
+"You can show this guide again any time from the iMirror menu." = "You can show this guide again any time from the iMirror menu.";
+
+/* Mirroring window */
 "Unpin" = "Unpin";
 "Keep on Top" = "Keep on Top";
-"Enter or Exit Full Screen" = "Enter or Exit Full Screen";
-"Couldn’t change Open at Login: %@" = "Couldn’t change Open at Login: %@";
-"Couldn’t forget paired devices: %@" = "Couldn’t forget paired devices: %@";
-"Couldn’t reset the receiver identity: %@" = "Couldn’t reset the receiver identity: %@";
-"Couldn’t open a mirroring window for %@: %@" = "Couldn’t open a mirroring window for %@: %@";
+
+/* About window */
+"A free, open-source AirPlay screen mirroring receiver for the Mac." = "A free, open-source AirPlay screen mirroring receiver for the Mac.";
+
+/* Alerts */
+"OK" = "OK";
+"Couldn’t Start the Receiver" = "Couldn’t Start the Receiver";
+"Couldn’t Rename the Receiver" = "Couldn’t Rename the Receiver";
+"Couldn’t Change Open at Login" = "Couldn’t Change Open at Login";
+"Couldn’t Forget Paired Devices" = "Couldn’t Forget Paired Devices";
+"Couldn’t Reset the Receiver Identity" = "Couldn’t Reset the Receiver Identity";
+"Couldn’t Open a Window for “%@”" = "Couldn’t Open a Window for “%@”";
+"Couldn’t Show “%@”" = "Couldn’t Show “%@”";
+"Couldn’t Play Sound" = "Couldn’t Play Sound";
+
+/* Error details */
 "The receiver name can’t be empty and, with the device tag added, must fit in 63 UTF-8 bytes." = "The receiver name can’t be empty and, with the device tag added, must fit in 63 UTF-8 bytes.";
 "The device tag is invalid." = "The device tag is invalid.";
 "Couldn’t create the audio output format." = "Couldn’t create the audio output format.";

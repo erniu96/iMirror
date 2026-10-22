@@ -36,7 +36,12 @@ final class MirrorContainerView: NSView {
         controls.onClose = { [weak self] in self?.onClose?() }
         controls.onTogglePin = { [weak self] in self?.onTogglePin?() }
         controls.onToggleFullScreen = { [weak self] in self?.onToggleFullScreen?() }
-        controls.setVisible(false, animated: false)
+        controls.setVisible(Self.keepsControlsVisible, animated: false)
+    }
+
+    /// Hidden controls are out of reach for VoiceOver, so they stay visible while it runs.
+    private static var keepsControlsVisible: Bool {
+        NSWorkspace.shared.isVoiceOverEnabled
     }
 
     required init?(coder: NSCoder) {
@@ -71,7 +76,7 @@ final class MirrorContainerView: NSView {
     }
 
     override func mouseExited(with event: NSEvent) {
-        controls.setVisible(false, animated: true)
+        controls.setVisible(Self.keepsControlsVisible, animated: true)
     }
 
     override func mouseDown(with event: NSEvent) {
@@ -87,7 +92,7 @@ private final class HoverControlsView: NSVisualEffectView {
     private let pinButton: NSButton
 
     init() {
-        let closeButton = Self.makeButton(symbol: "xmark", tooltip: String(localized: "Stop Mirroring This Device"))
+        let closeButton = Self.makeButton(symbol: "xmark", tooltip: String(localized: "Stop Mirroring"))
         pinButton = Self.makeButton(symbol: "pin.fill", tooltip: String(localized: "Unpin"))
         let fullScreenButton = Self.makeButton(
             symbol: "arrow.up.left.and.arrow.down.right",
@@ -128,8 +133,9 @@ private final class HoverControlsView: NSVisualEffectView {
     }
 
     func setPinned(_ pinned: Bool) {
-        pinButton.image = NSImage(systemSymbolName: pinned ? "pin.fill" : "pin", accessibilityDescription: nil)
-        pinButton.toolTip = pinned ? String(localized: "Unpin") : String(localized: "Keep on Top")
+        let title = pinned ? String(localized: "Unpin") : String(localized: "Keep on Top")
+        pinButton.image = NSImage(systemSymbolName: pinned ? "pin.fill" : "pin", accessibilityDescription: title)
+        pinButton.toolTip = title
     }
 
     func setVisible(_ visible: Bool, animated: Bool) {

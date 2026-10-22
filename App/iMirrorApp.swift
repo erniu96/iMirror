@@ -13,7 +13,7 @@ struct iMirrorApp: App {
         } label: {
             Image(nsImage: MenuBarIcon.image)
         }
-        .menuBarExtraStyle(.window)
+        .menuBarExtraStyle(.menu)
 
         Settings {
             SettingsView()

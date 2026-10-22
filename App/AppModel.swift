@@ -19,7 +19,6 @@ final class AppModel: ObservableObject {
             audioEngine.setMuted(!playsAudio)
         }
     }
-    @Published var alertMessage: String?
 
     private let receiverService: AirPlayReceiverService
     private let settingsStore: SettingsStore
@@ -31,6 +30,7 @@ final class AppModel: ObservableObject {
     private var sessions: [UInt64: MirroringSession] = [:]
     private var sessionOrder: [UInt64] = []
     private var pinPanelController: PinPanelController?
+    private var isPresentingAlert = false
     private var currentPort: UInt16 = 0
     private var cancellables = Set<AnyCancellable>()
 
@@ -64,7 +64,7 @@ final class AppModel: ObservableObject {
         }
         audioEngine.setMuted(!settingsStore.playsAudio)
         audioEngine.onError = { [weak self] message in
-            self?.alertMessage = message
+            self?.presentAlert(String(localized: "Couldn’t Play Sound"), message: message)
         }
         receiverService.setAudioSink(audioEngine)
         receiverService.onEvent = { [weak self] event in
@@ -86,6 +86,33 @@ final class AppModel: ObservableObject {
             }
         }
         welcomeWindowController?.present()
+    }
+
+    /// The standard About window, with a short description as its credits.
+    func showAbout() {
+        let credits = NSAttributedString(
+            string: String(localized: "A free, open-source AirPlay screen mirroring receiver for the Mac."),
+            attributes: [
+                .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
+                .foregroundColor: NSColor.secondaryLabelColor
+            ]
+        )
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
+    }
+
+    /// Brings the code window back if people closed it before entering the code.
+    func showPairingCode() {
+        guard case .pairing(let code) = status else { return }
+        if pinPanelController == nil {
+            pinPanelController = PinPanelController()
+        }
+        pinPanelController?.show(code: code)
+    }
+
+    func stopMirroring(sessionID: UInt64) {
+        sessions[sessionID]?.windowController.window?.orderOut(nil)
+        receiverService.disconnect(sessionID: sessionID)
     }
 
     func startReceiver() {
@@ -129,7 +156,7 @@ final class AppModel: ObservableObject {
             endAllSessions()
             receiverService.restart(configuration: updated)
         } catch {
-            alertMessage = error.localizedDescription
+            presentAlert(String(localized: "Couldn’t Rename the Receiver"), message: error.localizedDescription)
         }
     }
 
@@ -139,7 +166,7 @@ final class AppModel: ObservableObject {
             launchAtLogin = loginItemService.isEnabled
         } catch {
             launchAtLogin = loginItemService.isEnabled
-            alertMessage = String(localized: "Couldn’t change Open at Login: \(error.localizedDescription)")
+            presentAlert(String(localized: "Couldn’t Change Open at Login"), message: error.localizedDescription)
         }
     }
 
@@ -147,7 +174,7 @@ final class AppModel: ObservableObject {
         do {
             try pairingStore?.forgetTrustedDevices()
         } catch {
-            alertMessage = String(localized: "Couldn’t forget paired devices: \(error.localizedDescription)")
+            presentAlert(String(localized: "Couldn’t Forget Paired Devices"), message: error.localizedDescription)
         }
     }
 
@@ -158,13 +185,33 @@ final class AppModel: ObservableObject {
             endAllSessions()
             receiverService.restart(configuration: configuration)
         } catch {
-            alertMessage = String(localized: "Couldn’t reset the receiver identity: \(error.localizedDescription)")
+            presentAlert(String(localized: "Couldn’t Reset the Receiver Identity"), message: error.localizedDescription)
         }
     }
 
     func quit() {
         receiverService.stopSynchronously()
         NSApp.terminate(nil)
+    }
+
+    /// Shows one alert at a time; repeats that arrive while it is open (for example
+    /// a run of undecodable frames) are dropped instead of stacking up. The modal
+    /// loop starts from a run loop source rather than inside a main-queue block,
+    /// so video frames delivered on the main queue keep flowing behind the alert.
+    private func presentAlert(_ title: String, message: String) {
+        guard !isPresentingAlert else { return }
+        isPresentingAlert = true
+        RunLoop.main.perform { [weak self] in
+            MainActor.assumeIsolated {
+                let alert = NSAlert()
+                alert.messageText = title
+                alert.informativeText = message
+                alert.addButton(withTitle: String(localized: "OK"))
+                NSApp.activate(ignoringOtherApps: true)
+                alert.runModal()
+                self?.isPresentingAlert = false
+            }
+        }
     }
 
     private var isFailure: Bool {
@@ -198,7 +245,7 @@ final class AppModel: ObservableObject {
             endSession(sessionID: sessionID)
         case .failed(let message):
             status = .failed(message: message)
-            alertMessage = message
+            presentAlert(String(localized: "Couldn’t Start the Receiver"), message: message)
         }
     }
 
@@ -207,7 +254,7 @@ final class AppModel: ObservableObject {
 
         let pipeline = VideoPipeline()
         pipeline.onError = { [weak self] message in
-            self?.alertMessage = "\(device.name)：\(message)"
+            self?.presentAlert(String(localized: "Couldn’t Show “\(device.name)”"), message: message)
         }
 
         do {
@@ -230,7 +277,10 @@ final class AppModel: ObservableObject {
             windowController.beginSession(cascadeIndex: sessionOrder.count - 1)
         } catch {
             videoRouter.detach(sessionID: sessionID)
-            alertMessage = String(localized: "Couldn’t open a mirroring window for \(device.name): \(error.localizedDescription)")
+            presentAlert(
+                String(localized: "Couldn’t Open a Window for “\(device.name)”"),
+                message: error.localizedDescription
+            )
         }
     }
 

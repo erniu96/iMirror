@@ -37,7 +37,7 @@ Open Control Center on your iPhone, tap **Screen Mirroring**, pick your Mac, and
 - **Sound.** Plays the device's audio (AAC-ELD, AAC-LC, ALAC, PCM), following its volume. Can be turned off.
 - **Code pairing.** A new random four-digit code appears on the Mac for each new device; no fixed password is stored. Verified devices reconnect without a code, and you can forget them all at once.
 - **Always ready.** Optional open at login. Stops advertising while the Mac sleeps and resumes on wake. The receiver name carries a per-Mac tag such as `iMirror-A7K2`, so several Macs never get mixed up.
-- **English and Simplified Chinese**, following the system language. [More languages are welcome](Documentation/LOCALIZATION.md).
+- **English, Simplified Chinese, Traditional Chinese and Japanese**, following the system language. [More languages are welcome](Documentation/LOCALIZATION.md).
 - **Private.** Everything stays on your local network. No account, ads or analytics.
 
 ## Screenshots

@@ -1,5 +1,5 @@
 #!/bin/zsh
-# 用应用里真实的 SwiftUI 视图（菜单、设置、使用引导、验证码窗口）配上示例数据渲染截图，
+# 用应用里真实的 SwiftUI 视图（设置、使用引导、验证码窗口；菜单栏菜单是系统菜单，需从屏幕截取）配上示例数据渲染截图，
 # 输出 <目录>/<语言>/<light|dark>/*.png。不启动 AirPlay 接收器，窗口全透明，不会出现在屏幕上。
 # Renders the shipping views with sample data to <dir>/<language>/<light|dark>/*.png.
 set -euo pipefail
@@ -46,19 +46,19 @@ xcrun swiftc \
     "$PROJECT_DIR/Domain/ReceiverStatus.swift" \
     "$PROJECT_DIR/Domain/ReceiverConfiguration.swift" \
     "$PROJECT_DIR/App/MenuBarIcon.swift" \
-    "$PROJECT_DIR/App/MenuBarView.swift" \
-    "$PROJECT_DIR/App/SettingsView.swift" \
+        "$PROJECT_DIR/App/SettingsView.swift" \
     "$PROJECT_DIR/App/WelcomeWindowController.swift" \
     "$PROJECT_DIR/App/PinPanelController.swift" \
     "$PROJECT_DIR"/Scripts/Screenshots/*.swift
 codesign --force --sign - "$APP" >/dev/null
 
-for language in en zh-Hans; do
+typeset -A locales=(en en_US zh-Hans zh_CN zh-Hant zh_TW ja ja_JP)
+for language in en zh-Hans zh-Hant ja; do
     for appearance in light dark; do
         mkdir -p "$OUTPUT_DIR/$language/$appearance"
         # open 让程序在当前用户的图形会话中运行，通过 SSH 调用也能连上窗口服务器。
         open -W -n "$APP" --args "$OUTPUT_DIR/$language/$appearance" "$appearance" \
-            -AppleLanguages "($language)" -AppleLocale "${language/-Hans/_CN}"
+            -AppleLanguages "($language)" -AppleLocale "${locales[$language]}"
     done
 done
 ls -R "$OUTPUT_DIR"

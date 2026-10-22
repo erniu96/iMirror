@@ -9,16 +9,16 @@ iMirror's interface text lives in `Resources/<language>.lproj/`. English is the 
 | `Localizable.strings` | 菜单、设置、引导、提示和错误信息 / menus, settings, guide, alerts and errors |
 | `InfoPlist.strings` | 系统权限提示（本地网络）/ system permission prompts (local network) |
 
-已支持 / Available: `en`（English）、`zh-Hans`（简体中文）。
+已支持 / Available: `en`（English）、`zh-Hans`（简体中文）、`zh-Hant`（繁體中文）、`ja`（日本語）。
 
 ## 添加一种语言 / Adding a language
 
-1. 复制英文目录，目录名用 Apple 的语言代码，例如日语 `ja`、繁体中文 `zh-Hant`、德语 `de`：
+1. 复制英文目录，目录名用 Apple 的语言代码，例如德语 `de`、法语 `fr`、韩语 `ko`：
 
-   Copy the English folder, naming it with Apple's language code, e.g. `ja`, `zh-Hant`, `de`:
+   Copy the English folder, naming it with Apple's language code, e.g. `de`, `fr`, `ko`:
 
    ```bash
-   cp -R Resources/en.lproj Resources/ja.lproj
+   cp -R Resources/en.lproj Resources/de.lproj
    ```
 
 2. 翻译每一行等号**右边**的文字，左边的 key 保持不变：
@@ -26,7 +26,7 @@ iMirror's interface text lives in `Resources/<language>.lproj/`. English is the 
    Translate the text on the **right** of each `=`; leave the key on the left unchanged:
 
    ```text
-   "Show All Windows" = "すべてのウインドウを表示";
+   "Show All Windows" = "Alle Fenster anzeigen";
    ```
 
    - `%@`（文字）、`%lld`、`%d`（数字）是占位符，必须原样保留，数量和类型不能变。语序不同时可以写成 `%1$@`、`%2$@` 调整顺序。
@@ -40,7 +40,7 @@ iMirror's interface text lives in `Resources/<language>.lproj/`. English is the 
    Add the language code to `CFBundleLocalizations` in `Resources/Info.plist`:
 
    ```xml
-   <string>ja</string>
+   <string>de</string>
    ```
 
 4. 运行检查脚本（只需要 Python 3，不需要 Mac）：
@@ -60,18 +60,22 @@ iMirror's interface text lives in `Resources/<language>.lproj/`. English is the 
    Check it on a Mac with `./build.sh run`. To try a language without changing the whole system, pick it for iMirror in System Settings → General → Language & Region → Applications, or run:
 
    ```bash
-   build/iMirror.app/Contents/MacOS/iMirror -AppleLanguages '(ja)'
+   build/iMirror.app/Contents/MacOS/iMirror -AppleLanguages '(de)'
    ```
 
 6. 提交 Pull Request。/ Open a pull request.
 
 ## 给开发者 / For developers
 
-- SwiftUI 的 `Text`、`Button`、`Toggle`、`Label`、`Section` 等直接写英文字面量，会自动查找翻译。不需要翻译的文字用 `Text(verbatim:)`。
-  SwiftUI literals in `Text`, `Button`, `Toggle`, `Label`, `Section` etc. are looked up automatically. Use `Text(verbatim:)` for text that must not be translated.
+- SwiftUI 的 `Text`、`Button`、`Toggle`、`Label`、`Section`、`Menu` 等直接写英文字面量，会自动查找翻译。不需要翻译的文字用 `Text(verbatim:)`。
+  SwiftUI literals in `Text`, `Button`, `Toggle`, `Label`, `Section`, `Menu` etc. are looked up automatically. Use `Text(verbatim:)` for text that must not be translated.
+- 不要用字符串拼接组句（例如“设备名 + 冒号 + 消息”），整句写成一个带占位符的字符串，让各语言自行安排语序和标点。
+  Don't build sentences by concatenation (such as name + colon + message); write the whole sentence as one string with placeholders so each language controls word order and punctuation.
+- 窗口按内容确定高度，不要写死尺寸；译文常比英文长。
+  Size windows to their content rather than fixing their height; translations are often longer than English.
 - 其他字符串用 `String(localized: "…")`；Objective-C 用 `NSLocalizedString(@"…", nil)`。
   Use `String(localized: "…")` for other strings and `NSLocalizedString(@"…", nil)` in Objective-C.
 - 插值会变成占位符：字符串是 `%@`，整数是 `%lld`。状态码等数字请先转换成 `Int(…)`。
   Interpolations become placeholders: `%@` for strings and `%lld` for integers. Convert status codes and other numbers with `Int(…)`.
-- 新增或修改文字后，同步更新 `en.lproj` 和其他所有语言，再运行检查脚本。脚本也会拒绝界面代码里硬编码的中文。
-  After adding or changing text, update `en.lproj` and every other language, then run the checker. It also rejects hard-coded Chinese in UI code.
+- 新增或修改文字后，同步更新 `en.lproj` 和其他所有语言，再运行检查脚本。脚本也会拒绝界面代码里硬编码的中日文字和全角标点。
+  After adding or changing text, update `en.lproj` and every other language, then run the checker. It also rejects hard-coded Chinese or Japanese text and full-width punctuation in UI code.

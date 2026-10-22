@@ -1,6 +1,8 @@
-// Renders Resources/AppIcon.svg into Resources/AppIcon.icns.
+// Renders Resources/AppIcon.svg into Resources/AppIcon.icns (macOS 14 and 15) and
+// the full-bleed layer of the Icon Composer icon Resources/AppIcon.icon (macOS 26+,
+// which otherwise shrinks a legacy icon into a gray tile).
 // Requires Node and Playwright with Chromium: npm install playwright && npx playwright install chromium
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -28,6 +30,23 @@ for (const size of new Set(entries.map(([, size]) => size))) {
   rendered.set(size, await page.screenshot({ omitBackground: true }));
   await page.close();
 }
+
+// Icon Composer layer: the same artwork filling the whole 1024 square, without
+// the rounded corners or shadow; the system applies its own shape and effects.
+// The tile spans 100…924, so scale it up by 1024 / 824 around that origin.
+const fullBleed = svg.toString()
+  .replace('rx="185"', 'rx="0"')
+  .replace('<g filter="url(#iconShadow)">', '<g>')
+  .replace(/(<\/defs>)([\s\S]*)(<\/svg>\s*)$/, `$1<g transform="scale(${1024 / 824}) translate(-100,-100)">$2</g>$3`);
+const page = await browser.newPage({ viewport: { width: 1024, height: 1024 } });
+await page.setContent(
+  `<body style="margin:0"><img src="data:image/svg+xml;base64,${Buffer.from(fullBleed).toString('base64')}" width="1024" height="1024" style="display:block"></body>`,
+);
+await page.locator('img').evaluate((image) => image.decode());
+const layerDir = join(projectDir, 'Resources/AppIcon.icon/Assets');
+mkdirSync(layerDir, { recursive: true });
+writeFileSync(join(layerDir, 'AppIcon-art.png'), await page.screenshot());
+console.log('Resources/AppIcon.icon/Assets/AppIcon-art.png');
 await browser.close();
 
 const chunks = entries.map(([type, size]) => {

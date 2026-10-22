@@ -20,10 +20,13 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
         window.isReleasedWhenClosed = false
         super.init(window: window)
         window.delegate = self
-        window.contentView = NSHostingView(
+        let hosting = NSHostingView(
             rootView: WelcomeView { [weak self] in self?.close() }
                 .environmentObject(model)
         )
+        window.contentView = hosting
+        // Sized to the content, so longer translations aren't clipped.
+        window.setContentSize(hosting.fittingSize)
     }
 
     required init?(coder: NSCoder) {
@@ -52,27 +55,22 @@ private struct WelcomeView: View {
                 Image(nsImage: NSApp.applicationIconImage)
                     .resizable()
                     .frame(width: 84, height: 84)
+                    .accessibilityHidden(true)
                 Text("Welcome to iMirror")
                     .font(.title.bold())
+                    .accessibilityAddTraits(.isHeader)
                 Text("Mirror an iPhone, iPad or another Mac to this Mac")
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
             .padding(.top, 34)
             .padding(.bottom, 22)
 
             VStack(alignment: .leading, spacing: 16) {
                 step(1, title: "iMirror lives in the menu bar") {
-                    HStack(spacing: 6) {
-                        Text("Look for this icon")
-                        Image(nsImage: MenuBarIcon.image)
-                            .renderingMode(.template)
-                            .foregroundStyle(.primary)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(.quaternary, in: RoundedRectangle(cornerRadius: 5))
-                        Text("and click it for status and settings.")
-                    }
-                    Text("iMirror has no Dock icon; that’s expected.")
+                    // One sentence with the icon inline, so every language can
+                    // place it where its grammar needs it.
+                    Text("Click \(menuBarIcon) in the menu bar for status and settings. iMirror has no Dock icon; that’s expected.")
                 }
                 step(2, title: "Open Screen Mirroring on your iPhone or iPad") {
                     Text("Swipe down from the top-right corner to open Control Center, then tap Screen Mirroring. On a Mac, use Control Center in the menu bar.")
@@ -84,29 +82,34 @@ private struct WelcomeView: View {
                     Text("A four-digit code appears on this Mac; enter it on the device. The same device won’t need a code again.")
                 }
                 step(5, title: "Use the mirroring window") {
-                    Text("Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner. Sound from the device plays on this Mac.")
+                    Text("Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner, or press Command-W to stop and Control-Command-F for full screen. Sound from the device plays on this Mac.")
                 }
             }
             .padding(.horizontal, 36)
 
-            Spacer(minLength: 18)
+            Spacer(minLength: 24)
 
             VStack(spacing: 12) {
                 Toggle(
-                    "Open iMirror at Login",
+                    "Open iMirror at login",
                     isOn: Binding(get: { model.launchAtLogin }, set: model.setLaunchAtLogin)
                 )
                 .toggleStyle(.checkbox)
                 Button("Get Started", action: onDone)
                     .keyboardShortcut(.defaultAction)
                     .controlSize(.large)
-                Text("You can show this guide again any time with Help in the iMirror menu.")
+                Text("You can show this guide again any time from the iMirror menu.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding(.bottom, 26)
         }
-        .frame(width: 520, height: 700)
+        .frame(width: 520)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var menuBarIcon: Text {
+        Text(Image(nsImage: MenuBarIcon.image)).baselineOffset(-3)
     }
 
     private func step<Content: View>(
@@ -115,13 +118,16 @@ private struct WelcomeView: View {
         @ViewBuilder detail: () -> Content
     ) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            Text("\(number)")
+            Text(number, format: .number)
                 .font(.callout.bold())
                 .foregroundStyle(.white)
                 .frame(width: 24, height: 24)
                 .background(Circle().fill(Color.accentColor))
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(.headline)
+                Text(title)
+                    .font(.headline)
+                    .accessibilityAddTraits(.isHeader)
                 detail()
                     .font(.callout)
                     .foregroundStyle(.secondary)

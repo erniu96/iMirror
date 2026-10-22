@@ -10,7 +10,6 @@ final class AppModel: ObservableObject {
     @Published var launchAtLogin = true
     @Published var alwaysOnTop = true
     @Published var playsAudio = true
-    @Published var alertMessage: String?
 
     init(status: ReceiverStatus) {
         self.status = status
@@ -18,6 +17,9 @@ final class AppModel: ObservableObject {
     }
 
     func showWelcome() {}
+    func showAbout() {}
+    func showPairingCode() {}
+    func stopMirroring(sessionID: UInt64) {}
     func startReceiver() {}
     func showMirrorWindow(sessionID: UInt64) {}
     func showAllMirrorWindows() {}

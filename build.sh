@@ -36,7 +36,8 @@ readonly FRAMEWORKS_DIR="$CONTENTS/Frameworks"
 # Default to the oldest supported system so a local build also runs on other Macs
 # and reuses one OpenSSL build regardless of the host macOS version.
 readonly MINIMUM_MACOS="${IMIRROR_MINIMUM_MACOS:-14.0}"
-readonly TARGET_ARCH="$(uname -m)"
+# IMIRROR_ARCH=x86_64 cross-builds the Intel half of a universal app on Apple silicon.
+readonly TARGET_ARCH="${IMIRROR_ARCH:-$(uname -m)}"
 SDK_PATH="$(xcrun --sdk macosx --show-sdk-path)"
 readonly SDK_PATH
 
@@ -57,6 +58,22 @@ mkdir -p "$MACOS_DIR" "$RESOURCES_DIR" "$FRAMEWORKS_DIR"
 cp "$PROJECT_DIR/Resources/Info.plist" "$CONTENTS/Info.plist"
 /usr/libexec/PlistBuddy -c "Set :LSMinimumSystemVersion $MINIMUM_MACOS" "$CONTENTS/Info.plist"
 cp "$PROJECT_DIR/Resources/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
+# macOS 26+ shrinks a legacy .icns into a gray tile; the Icon Composer icon
+# (Assets.car + CFBundleIconName) fills the system shape. actool ships with
+# Xcode 26+ and is called directly (xcrun needs the Xcode license accepted).
+# Without it the app keeps the .icns, which macOS 14 and 15 use anyway.
+readonly ACTOOL="${IMIRROR_ACTOOL:-/Applications/Xcode.app/Contents/Developer/usr/bin/actool}"
+if [[ -x "$ACTOOL" ]]; then
+    icon_build_dir="$BUILD_DIR/icon"
+    rm -rf -- "$icon_build_dir" && mkdir -p "$icon_build_dir"
+    DEVELOPER_DIR="${ACTOOL%/usr/bin/actool}" "$ACTOOL" "$PROJECT_DIR/Resources/AppIcon.icon" \
+        --compile "$icon_build_dir" --platform macosx --minimum-deployment-target "$MINIMUM_MACOS" \
+        --app-icon AppIcon --output-partial-info-plist "$icon_build_dir/partial.plist" >/dev/null
+    cp "$icon_build_dir/Assets.car" "$RESOURCES_DIR/Assets.car"
+    /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" "$CONTENTS/Info.plist"
+else
+    print -u2 "warning: 没有 Xcode 26+ 的 actool（$ACTOOL），macOS 26 及以后图标会显示在灰色底框里"
+fi
 for localization in "$PROJECT_DIR"/Resources/*.lproj(N); do
     cp -R "$localization" "$RESOURCES_DIR/"
 done
@@ -161,15 +178,7 @@ install_name_tool \
     "@executable_path/../Frameworks/$LIBCRYPTO_NAME" \
     "$MACOS_DIR/$APP_NAME"
 
-readonly SIGN_IDENTITY="${IMIRROR_SIGN_IDENTITY:--}"
-if [[ "$SIGN_IDENTITY" == "-" ]]; then
-    codesign --force --sign - "$FRAMEWORKS_DIR/$LIBCRYPTO_NAME"
-    codesign --force --sign - "$APP_BUNDLE"
-else
-    codesign --force --timestamp --options runtime --sign "$SIGN_IDENTITY" "$FRAMEWORKS_DIR/$LIBCRYPTO_NAME"
-    codesign --force --timestamp --options runtime --sign "$SIGN_IDENTITY" "$APP_BUNDLE"
-fi
-codesign --verify --deep --strict "$APP_BUNDLE"
+"$PROJECT_DIR/Scripts/sign-app.sh" "$APP_BUNDLE"
 if otool -L "$MACOS_DIR/$APP_NAME" | tail -n +2 | grep -F -- "$OPENSSL_PREFIX" >/dev/null; then
     print -u2 "应用仍引用构建机上的 OpenSSL：$OPENSSL_PREFIX"
     exit 1

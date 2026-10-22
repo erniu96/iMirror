@@ -22,8 +22,10 @@ SWIFT_STRING = r'"((?:[^"\\\n]|\\.)*)"'
 SWIFT_PATTERNS = [
     re.compile(r'String\(localized:\s*' + SWIFT_STRING),
     # SwiftUI initializers whose first string literal is a LocalizedStringKey.
-    re.compile(r'\b(?:Text|Button|Toggle|Label|Section|TextField|LabeledContent|confirmationDialog)\(\s*' + SWIFT_STRING),
+    re.compile(r'\b(?:Text|Button|Toggle|Label|Section|TextField|LabeledContent|Menu|confirmationDialog)\(\s*' + SWIFT_STRING),
+    # Local helpers that take a LocalizedStringKey.
     re.compile(r'\bstep\(\s*\d+,\s*title:\s*' + SWIFT_STRING),
+    re.compile(r'\bnote\(\s*' + SWIFT_STRING),
 ]
 OBJC_PATTERN = re.compile(r'NSLocalizedString\(\s*@' + SWIFT_STRING)
 STRINGS_ENTRY = re.compile(r'^\s*"((?:[^"\\]|\\.)*)"\s*=\s*"((?:[^"\\]|\\.)*)"\s*;\s*$')
@@ -146,7 +148,9 @@ def main():
         for path in sorted((ROOT / directory).glob("*")):
             for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
                 code = line.split("//", 1)[0]
-                if re.search("[一-鿿]", code):
+                # CJK ideographs, kana and full-width punctuation (such as "："),
+                # which would show up untranslated in every other language.
+                if re.search("[\u3000-\u30ff\u4e00-\u9fff\uff00-\uffef]", code):
                     problems.append(f"{path.relative_to(ROOT)}:{number}: 硬编码的中文 / hard-coded Chinese text: {line.strip()}")
 
     if problems:

@@ -1,7 +1,8 @@
 import AppKit
 import SwiftUI
 
-/// Renders the shipping menu, settings, welcome and code windows to PNG files.
+/// Renders the shipping settings, welcome and code windows to PNG files. The
+/// menu bar menu is a system menu and is captured from the screen instead.
 /// Windows are kept fully transparent, so nothing visibly appears on screen.
 /// Usage: iMirrorScreenshots.app/Contents/MacOS/iMirrorScreenshots <output dir> <light|dark>
 @main
@@ -29,27 +30,11 @@ final class ScreenshotDelegate: NSObject, NSApplicationDelegate {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
         Task {
-            await captureMenu("menu-ready", status: .ready(port: 7000))
-            await captureMenu("menu-pairing", status: .pairing(code: "4831"))
-            await captureMenu("menu-streaming", status: .streaming([
-                MirroringSessionSummary(id: 1, device: MirroringDevice(name: "iPhone", model: "iPhone17,1")),
-                MirroringSessionSummary(id: 2, device: MirroringDevice(name: "iPad", model: "iPad14,8")),
-            ]))
             await captureWelcome()
             await capturePinPanel()
             await captureSettings()
             NSApp.terminate(nil)
         }
-    }
-
-    private func captureMenu(_ name: String, status: ReceiverStatus) async {
-        let hosting = NSHostingView(rootView: MenuBarView()
-            .environmentObject(AppModel(status: status))
-            .background(Color(nsColor: .windowBackgroundColor)))
-        hosting.frame.size = hosting.fittingSize
-        let panel = NSPanel(contentRect: hosting.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        panel.contentView = hosting
-        await capture(panel, name: name, includeFrame: false)
     }
 
     private func captureWelcome() async {

@@ -4,6 +4,40 @@
 
 Each release page includes the matching section below. Before tagging a release, add a section at the top titled `## [version] - date`.
 
+## [1.3.0] - 2026-10-22
+
+### 新增 / Added
+
+- 新增繁体中文和日语界面，共四种语言（英文、简体中文、繁体中文、日语），跟随系统语言。
+  The interface is now also in Traditional Chinese and Japanese, four languages in all, following the system language.
+- 镜像窗口支持键盘：Command-W 停止投屏，Control-Command-F 进入或退出全屏幕，Esc 退出全屏幕。
+  Mirroring windows work from the keyboard: Command-W stops mirroring, Control-Command-F enters or exits full screen, Esc leaves full screen.
+- 发布包使用固定的自签名证书签名，更新后 macOS 不会再次询问本地网络权限。
+  Builds are signed with a fixed self-signed certificate, so macOS keeps the Local Network permission after an update.
+
+### 改进 / Improved
+
+按 Apple 人机交互指南（HIG）逐项检查并调整：
+Reviewed against Apple's Human Interface Guidelines:
+
+- 菜单栏图标点开后是标准菜单，不再是弹出面板；每台投屏设备是一个子菜单（显示窗口、全屏幕、停止投屏）。
+  The menu bar icon opens a standard menu instead of a popover; each mirroring device has a submenu (Show Window, Full Screen, Stop Mirroring).
+- 菜单新增“关于 iMirror”（系统标准关于窗口），设置窗口去掉“关于”面板；“退出”改为“退出 iMirror”，“使用帮助”改为“入门指南”。
+  The menu has About iMirror (the standard About window), replacing the About pane in Settings; Quit is now Quit iMirror and Help is now Getting Started Guide.
+- 设置窗口记住上次打开的面板，高度随内容变化；接收器名称未修改时“应用”按钮不可用，回车即可应用。
+  Settings reopens on the last pane and sizes to its content; Apply is unavailable until the receiver name changes, and Return applies it.
+- 确认对话框说明后果并提供“取消”；出错提示的标题直接说明发生了什么，不再只写 “iMirror”。
+  Confirmation dialogs explain the consequence and offer Cancel; error alerts are titled with what went wrong instead of just “iMirror”.
+- 验证码窗口标题改为“验证码”；欢迎、验证码和设置窗口按内容自动调整大小，较长的翻译不会被截断。
+  The code window is titled Pairing Code; the welcome, code and settings windows size to their content, so longer translations aren't clipped.
+- 辅助功能：镜像窗口和按钮有 VoiceOver 标签，开启 VoiceOver 时控制按钮常驻显示；验证码逐位朗读。
+  Accessibility: mirroring windows and their buttons have VoiceOver labels, the controls stay visible while VoiceOver runs, and the code is read digit by digit.
+
+### 修复 / Fixed
+
+- 解码出错的提示不再把中文全角冒号硬编码进所有语言。
+  Video error alerts no longer hard-code a Chinese full-width colon in every language.
+
 ## [1.2.1] - 2026-10-06
 
 ### 修复 / Fixed

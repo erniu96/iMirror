@@ -26,7 +26,7 @@ final class MirrorWindowController: NSWindowController {
         self.surface = MirrorContainerView(videoView: try MetalVideoView(renderFrame: .zero))
         self.onClose = onClose
 
-        let window = NSWindow(
+        let window = MirrorWindow(
             contentRect: NSRect(x: 0, y: 0, width: 360, height: 640),
             styleMask: [.borderless, .resizable],
             backing: .buffered,
@@ -42,6 +42,7 @@ final class MirrorWindowController: NSWindowController {
         window.isMovableByWindowBackground = true
         window.collectionBehavior = [.managed, .participatesInCycle, .fullScreenPrimary]
         window.animationBehavior = .documentWindow
+        window.setAccessibilityLabel(title)
 
         super.init(window: window)
         isAlwaysOnTop = alwaysOnTop
@@ -77,11 +78,13 @@ final class MirrorWindowController: NSWindowController {
     }
 
     private func wireActions() {
-        surface.onClose = { [weak self] in
+        let stop = { [weak self] in
             guard let self else { return }
             self.window?.orderOut(nil)
             self.onClose()
         }
+        surface.onClose = stop
+        (window as? MirrorWindow)?.onClose = stop
         surface.onTogglePin = { [weak self] in self?.toggleAlwaysOnTop() }
         surface.onToggleFullScreen = { [weak self] in self?.toggleFullScreen() }
     }
@@ -155,5 +158,39 @@ final class MirrorWindowController: NSWindowController {
         frame.origin.x = min(max(frame.origin.x, visible.minX), max(visible.minX, visible.maxX - frame.width))
         frame.origin.y = min(max(frame.origin.y, visible.minY), max(visible.minY, visible.maxY - frame.height))
         window.setFrameOrigin(frame.origin)
+    }
+}
+
+/// A borderless window still needs to take keyboard focus so the standard
+/// window commands work: Command-W stops mirroring, Control-Command-F toggles
+/// full screen and Esc leaves it.
+private final class MirrorWindow: NSWindow {
+    var onClose: (() -> Void)?
+
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
+
+    override func performClose(_ sender: Any?) {
+        onClose?()
+    }
+
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        let modifiers = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        switch (modifiers, event.charactersIgnoringModifiers?.lowercased()) {
+        case ([.command], "w"):
+            performClose(nil)
+            return true
+        case ([.control, .command], "f"):
+            toggleFullScreen(nil)
+            return true
+        default:
+            return super.performKeyEquivalent(with: event)
+        }
+    }
+
+    override func cancelOperation(_ sender: Any?) {
+        if styleMask.contains(.fullScreen) {
+            toggleFullScreen(nil)
+        }
     }
 }

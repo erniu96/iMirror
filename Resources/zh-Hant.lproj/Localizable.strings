@@ -1,0 +1,109 @@
+/* 繁體中文 strings for iMirror. See Documentation/LOCALIZATION.md. */
+
+
+/* Menu bar menu */
+"Receiver Name: %@" = "接收器名稱：%@";
+"Show Window" = "顯示視窗";
+"Enter or Exit Full Screen" = "進入或結束全螢幕";
+"Stop Mirroring" = "停止鏡像輸出";
+"Show All Windows" = "顯示所有視窗";
+"Show Pairing Code (%@)" = "顯示驗證碼（%@）";
+"Restart Receiver" = "重新啟動接收器";
+"In Screen Mirroring, choose “%@”" = "在「螢幕鏡像輸出」中選擇「%@」";
+"Keep Mirroring Windows on Top" = "鏡像視窗永遠在最上層";
+"Play Sound from Mirrored Devices" = "播放鏡像裝置的聲音";
+"About iMirror" = "關於 iMirror";
+"Getting Started Guide" = "入門指南";
+"Settings…" = "設定⋯";
+"Quit iMirror" = "結束 iMirror";
+
+/* Receiver status */
+"Receiver stopped" = "接收器已停止";
+"Starting receiver…" = "正在啟動接收器⋯";
+"Waiting for a device" = "正在等待裝置";
+"Waiting for the code" = "正在等待輸入驗證碼";
+"Receiving mirroring" = "正在接收鏡像輸出";
+"Receiving from %lld devices" = "正在接收 %lld 部裝置的鏡像輸出";
+"Receiver failed to start" = "接收器無法啟動";
+
+/* Pairing code window */
+"Pairing Code" = "驗證碼";
+"Enter this code on the device that is mirroring" = "在進行鏡像輸出的裝置上輸入此驗證碼";
+"This window closes once the device is verified." = "驗證成功後，此視窗會自動關閉。";
+
+/* Settings */
+"General" = "一般";
+"Pairing" = "配對";
+"Receiver Name:" = "接收器名稱：";
+"Shown as:" = "顯示為：";
+"Apply and Restart Receiver" = "套用並重新啟動接收器";
+"This is the name to choose in Screen Mirroring on your iPhone or iPad. The tag after it tells your Macs apart." = "在 iPhone 或 iPad 的「螢幕鏡像輸出」中選擇這個名稱。後面的標記用來區分你的多部 Mac。";
+"Keep mirroring windows on top" = "鏡像視窗永遠在最上層";
+"Mirroring windows have no title bar. Move the pointer over a window to show the stop, pin and full-screen buttons in its top-left corner." = "鏡像視窗沒有標題列；將指標移入視窗後，左上角會顯示停止、置頂和全螢幕按鈕。";
+"Play sound from mirrored devices" = "播放鏡像裝置的聲音";
+"Volume follows the mirroring device; adjust it there." = "音量跟隨鏡像裝置；請在裝置上調整。";
+"Open iMirror at login" = "登入時開啟 iMirror";
+"A new four-digit code is generated each time a new device pairs; no fixed code is stored. Verified devices can reconnect without a code." = "每次有新裝置配對時都會產生新的四位數驗證碼，不會儲存固定驗證碼。已驗證的裝置再次連線時不需要驗證碼。";
+"Forget All Devices…" = "忘記所有裝置⋯";
+"Reset Receiver Identity…" = "重置接收器身分⋯";
+"After a reset, every device must verify again." = "重置後，所有裝置都需要重新驗證。";
+"Forget all paired devices?" = "要忘記所有已配對的裝置嗎？";
+"Forget All Devices" = "忘記所有裝置";
+"Each device will need a new code the next time it mirrors to this Mac." = "下次鏡像輸出到這部 Mac 時，每部裝置都需要輸入新的驗證碼。";
+"Reset the receiver identity?" = "要重置接收器身分嗎？";
+"Reset and Restart" = "重置並重新啟動";
+"The receiver restarts, current mirroring stops and every device must verify again. This can’t be undone." = "接收器會重新啟動，目前的鏡像輸出會停止，所有裝置都需要重新驗證。此動作無法還原。";
+"Cancel" = "取消";
+
+/* Getting started guide */
+"Welcome to iMirror" = "歡迎使用 iMirror";
+"Mirror an iPhone, iPad or another Mac to this Mac" = "將 iPhone、iPad 或另一部 Mac 的螢幕鏡像輸出到這部 Mac";
+"iMirror lives in the menu bar" = "iMirror 位於選單列";
+"Click %@ in the menu bar for status and settings. iMirror has no Dock icon; that’s expected." = "按一下選單列中的 %@ 查看狀態和設定。iMirror 沒有 Dock 圖像，這是正常的。";
+"Open Screen Mirroring on your iPhone or iPad" = "在 iPhone 或 iPad 上打開「螢幕鏡像輸出」";
+"Swipe down from the top-right corner to open Control Center, then tap Screen Mirroring. On a Mac, use Control Center in the menu bar." = "從螢幕右上角向下滑動來打開控制中心，然後點一下「螢幕鏡像輸出」。在 Mac 上，請使用選單列中的控制中心。";
+"Choose “%@”" = "選擇「%@」";
+"The device and this Mac must be on the same Wi-Fi network. If macOS asks whether iMirror may access the local network, click Allow." = "裝置和這部 Mac 必須連接同一個 Wi-Fi 網路。如果 macOS 詢問是否允許 iMirror 存取區域網路，請按一下「允許」。";
+"Enter the code the first time" = "第一次連線時輸入驗證碼";
+"A four-digit code appears on this Mac; enter it on the device. The same device won’t need a code again." = "這部 Mac 上會顯示四位數驗證碼，在裝置上輸入即可。同一部裝置之後再連線就不需要驗證碼。";
+"Use the mirroring window" = "使用鏡像視窗";
+"Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner, or press Command-W to stop and Control-Command-F for full screen. Sound from the device plays on this Mac." = "將指標移到畫面上，左上角會顯示停止、置頂和全螢幕按鈕；也可以按 Command-W 停止，按 Control-Command-F 切換全螢幕。裝置的聲音會從這部 Mac 播放。";
+"Get Started" = "開始使用";
+"You can show this guide again any time from the iMirror menu." = "隨時可以從 iMirror 選單再次打開本指南。";
+
+/* Mirroring window */
+"Unpin" = "取消置頂";
+"Keep on Top" = "保持置頂";
+
+/* About window */
+"A free, open-source AirPlay screen mirroring receiver for the Mac." = "免費、開放原始碼的 Mac AirPlay 螢幕鏡像輸出接收器。";
+
+/* Alerts */
+"OK" = "好";
+"Couldn’t Start the Receiver" = "無法啟動接收器";
+"Couldn’t Rename the Receiver" = "無法更改接收器名稱";
+"Couldn’t Change Open at Login" = "無法更改登入時開啟";
+"Couldn’t Forget Paired Devices" = "無法忘記已配對的裝置";
+"Couldn’t Reset the Receiver Identity" = "無法重置接收器身分";
+"Couldn’t Open a Window for “%@”" = "無法為「%@」打開視窗";
+"Couldn’t Show “%@”" = "無法顯示「%@」的畫面";
+"Couldn’t Play Sound" = "無法播放聲音";
+
+/* Error details */
+"The receiver name can’t be empty and, with the device tag added, must fit in 63 UTF-8 bytes." = "接收器名稱不能為空白，且加上裝置標記後不能超過 63 個 UTF-8 位元組。";
+"The device tag is invalid." = "本機標記無效。";
+"Couldn’t create the audio output format." = "無法建立音訊輸出格式。";
+"Couldn’t create the audio decoder (%lld)." = "無法建立音訊解碼器（%lld）。";
+"Couldn’t start audio output: %@" = "無法啟動音訊輸出：%@";
+"Couldn’t create the H.264 format description (%lld)." = "無法建立 H.264 格式描述（%lld）。";
+"Couldn’t create the VideoToolbox decoder (%lld)." = "無法建立 VideoToolbox 解碼器（%lld）。";
+"Couldn’t decode an H.264 frame (%lld)." = "H.264 影格解碼失敗（%lld）。";
+"This Mac doesn’t support Metal." = "這部 Mac 不支援 Metal。";
+"Couldn’t create a Metal vertex buffer." = "無法建立 Metal 頂點緩衝區。";
+"The receiver is already running." = "接收器已在執行中。";
+"Couldn’t initialize the AirPlay receiver." = "無法初始化 AirPlay 接收器。";
+"Couldn’t start listening for AirPlay connections." = "無法開始監聽 AirPlay 連線。";
+"Couldn’t initialize Bonjour/AWDL advertising." = "無法初始化 Bonjour/AWDL 廣播。";
+"Couldn’t configure the AirPlay receiver identity." = "無法設定 AirPlay 接收器身分。";
+"Bonjour/AWDL service registration failed (RAOP=%d, AirPlay=%d)." = "Bonjour/AWDL 服務註冊失敗（RAOP=%d，AirPlay=%d）。";
+"Apple device" = "Apple 裝置";

@@ -1,0 +1,29 @@
+{
+  "fill" : {
+    "automatic-gradient" : "extended-srgb:0.82353,0.92157,0.86275,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "glass" : false,
+          "image-name" : "AppIcon-art.png",
+          "name" : "AppIcon-art"
+        }
+      ],
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0
+      },
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "macOS"
+    ]
+  }
+}

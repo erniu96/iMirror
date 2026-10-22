@@ -1,0 +1,109 @@
+/* 日本語 strings for iMirror. See Documentation/LOCALIZATION.md. */
+
+
+/* Menu bar menu */
+"Receiver Name: %@" = "受信側の名前：%@";
+"Show Window" = "ウインドウを表示";
+"Enter or Exit Full Screen" = "フルスクリーンにする/解除する";
+"Stop Mirroring" = "ミラーリングを停止";
+"Show All Windows" = "すべてのウインドウを表示";
+"Show Pairing Code (%@)" = "ペアリングコードを表示（%@）";
+"Restart Receiver" = "受信を再開";
+"In Screen Mirroring, choose “%@”" = "「画面ミラーリング」で「%@」を選択";
+"Keep Mirroring Windows on Top" = "ミラーリングウインドウを常に手前に表示";
+"Play Sound from Mirrored Devices" = "ミラーリング元のサウンドを再生";
+"About iMirror" = "iMirrorについて";
+"Getting Started Guide" = "はじめにガイド";
+"Settings…" = "設定…";
+"Quit iMirror" = "iMirrorを終了";
+
+/* Receiver status */
+"Receiver stopped" = "受信を停止しています";
+"Starting receiver…" = "受信を開始しています…";
+"Waiting for a device" = "デバイスを待っています";
+"Waiting for the code" = "コードの入力を待っています";
+"Receiving mirroring" = "ミラーリングを受信中";
+"Receiving from %lld devices" = "%lld台のデバイスから受信中";
+"Receiver failed to start" = "受信を開始できませんでした";
+
+/* Pairing code window */
+"Pairing Code" = "ペアリングコード";
+"Enter this code on the device that is mirroring" = "ミラーリングしているデバイスでこのコードを入力してください";
+"This window closes once the device is verified." = "デバイスが確認されると、このウインドウは閉じます。";
+
+/* Settings */
+"General" = "一般";
+"Pairing" = "ペアリング";
+"Receiver Name:" = "受信側の名前：";
+"Shown as:" = "表示名：";
+"Apply and Restart Receiver" = "適用して受信を再開";
+"This is the name to choose in Screen Mirroring on your iPhone or iPad. The tag after it tells your Macs apart." = "iPhoneやiPadの「画面ミラーリング」でこの名前を選択します。末尾のタグで複数のMacを見分けられます。";
+"Keep mirroring windows on top" = "ミラーリングウインドウを常に手前に表示";
+"Mirroring windows have no title bar. Move the pointer over a window to show the stop, pin and full-screen buttons in its top-left corner." = "ミラーリングウインドウにはタイトルバーがありません。ポインタをウインドウに移動すると、左上に停止、固定、フルスクリーンのボタンが表示されます。";
+"Play sound from mirrored devices" = "ミラーリング元のサウンドを再生";
+"Volume follows the mirroring device; adjust it there." = "音量はミラーリング元のデバイスに従います。デバイス側で調整してください。";
+"Open iMirror at login" = "ログイン時にiMirrorを開く";
+"A new four-digit code is generated each time a new device pairs; no fixed code is stored. Verified devices can reconnect without a code." = "新しいデバイスがペアリングするたびに新しい4桁のコードが作られ、固定のコードは保存されません。確認済みのデバイスはコードなしで再接続できます。";
+"Forget All Devices…" = "すべてのデバイスの登録を解除…";
+"Reset Receiver Identity…" = "受信側のIDをリセット…";
+"After a reset, every device must verify again." = "リセット後は、すべてのデバイスで再度の確認が必要です。";
+"Forget all paired devices?" = "ペアリング済みのすべてのデバイスの登録を解除しますか？";
+"Forget All Devices" = "すべての登録を解除";
+"Each device will need a new code the next time it mirrors to this Mac." = "次回このMacにミラーリングするとき、各デバイスで新しいコードが必要になります。";
+"Reset the receiver identity?" = "受信側のIDをリセットしますか？";
+"Reset and Restart" = "リセットして再開";
+"The receiver restarts, current mirroring stops and every device must verify again. This can’t be undone." = "受信が再開され、現在のミラーリングは停止し、すべてのデバイスで再度の確認が必要になります。この操作は取り消せません。";
+"Cancel" = "キャンセル";
+
+/* Getting started guide */
+"Welcome to iMirror" = "iMirrorへようこそ";
+"Mirror an iPhone, iPad or another Mac to this Mac" = "iPhone、iPad、または別のMacの画面をこのMacにミラーリングします";
+"iMirror lives in the menu bar" = "iMirrorはメニューバーにあります";
+"Click %@ in the menu bar for status and settings. iMirror has no Dock icon; that’s expected." = "メニューバーの%@をクリックすると、状況と設定を確認できます。iMirrorにはDockアイコンがありませんが、それで正常です。";
+"Open Screen Mirroring on your iPhone or iPad" = "iPhoneまたはiPadで「画面ミラーリング」を開く";
+"Swipe down from the top-right corner to open Control Center, then tap Screen Mirroring. On a Mac, use Control Center in the menu bar." = "画面の右上隅から下にスワイプしてコントロールセンターを開き、「画面ミラーリング」をタップします。Macでは、メニューバーのコントロールセンターを使います。";
+"Choose “%@”" = "「%@」を選択";
+"The device and this Mac must be on the same Wi-Fi network. If macOS asks whether iMirror may access the local network, click Allow." = "デバイスとこのMacは同じWi-Fiネットワークに接続している必要があります。iMirrorにローカルネットワークへのアクセスを許可するか尋ねられたら、「許可」をクリックしてください。";
+"Enter the code the first time" = "初回はコードを入力";
+"A four-digit code appears on this Mac; enter it on the device. The same device won’t need a code again." = "このMacに4桁のコードが表示されるので、デバイスで入力します。同じデバイスでは次回からコードは不要です。";
+"Use the mirroring window" = "ミラーリングウインドウを使う";
+"Move the pointer over the picture to show the stop, pin and full-screen buttons in the top-left corner, or press Command-W to stop and Control-Command-F for full screen. Sound from the device plays on this Mac." = "ポインタを画面の上に移動すると、左上に停止、固定、フルスクリーンのボタンが表示されます。Command-Wで停止、Control-Command-Fでフルスクリーンにすることもできます。デバイスのサウンドはこのMacで再生されます。";
+"Get Started" = "はじめる";
+"You can show this guide again any time from the iMirror menu." = "このガイドはiMirrorメニューからいつでも表示できます。";
+
+/* Mirroring window */
+"Unpin" = "固定を解除";
+"Keep on Top" = "常に手前に表示";
+
+/* About window */
+"A free, open-source AirPlay screen mirroring receiver for the Mac." = "Mac用の無料でオープンソースのAirPlay画面ミラーリング受信アプリです。";
+
+/* Alerts */
+"OK" = "OK";
+"Couldn’t Start the Receiver" = "受信を開始できません";
+"Couldn’t Rename the Receiver" = "受信側の名前を変更できません";
+"Couldn’t Change Open at Login" = "ログイン時に開く設定を変更できません";
+"Couldn’t Forget Paired Devices" = "ペアリング済みデバイスの登録を解除できません";
+"Couldn’t Reset the Receiver Identity" = "受信側のIDをリセットできません";
+"Couldn’t Open a Window for “%@”" = "「%@」のウインドウを開けません";
+"Couldn’t Show “%@”" = "「%@」の画面を表示できません";
+"Couldn’t Play Sound" = "サウンドを再生できません";
+
+/* Error details */
+"The receiver name can’t be empty and, with the device tag added, must fit in 63 UTF-8 bytes." = "受信側の名前は空にできません。また、デバイスタグを含めて63バイト（UTF-8）以内にする必要があります。";
+"The device tag is invalid." = "デバイスタグが無効です。";
+"Couldn’t create the audio output format." = "オーディオ出力フォーマットを作成できません。";
+"Couldn’t create the audio decoder (%lld)." = "オーディオデコーダを作成できません（%lld）。";
+"Couldn’t start audio output: %@" = "オーディオ出力を開始できません：%@";
+"Couldn’t create the H.264 format description (%lld)." = "H.264フォーマット記述を作成できません（%lld）。";
+"Couldn’t create the VideoToolbox decoder (%lld)." = "VideoToolboxデコーダを作成できません（%lld）。";
+"Couldn’t decode an H.264 frame (%lld)." = "H.264フレームをデコードできません（%lld）。";
+"This Mac doesn’t support Metal." = "このMacはMetalに対応していません。";
+"Couldn’t create a Metal vertex buffer." = "Metal頂点バッファを作成できません。";
+"The receiver is already running." = "受信はすでに実行中です。";
+"Couldn’t initialize the AirPlay receiver." = "AirPlay受信を初期化できません。";
+"Couldn’t start listening for AirPlay connections." = "AirPlay接続の待ち受けを開始できません。";
+"Couldn’t initialize Bonjour/AWDL advertising." = "Bonjour/AWDLの公開を初期化できません。";
+"Couldn’t configure the AirPlay receiver identity." = "AirPlay受信側のIDを設定できません。";
+"Bonjour/AWDL service registration failed (RAOP=%d, AirPlay=%d)." = "Bonjour/AWDLサービスの登録に失敗しました（RAOP=%d、AirPlay=%d）。";
+"Apple device" = "Appleデバイス";
