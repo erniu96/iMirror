@@ -106,7 +106,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
 
 - (BOOL)start:(NSError **)error {
     if (_state == AirPlayBridgeStateRunning || _state == AirPlayBridgeStateConnected) {
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:1 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"The receiver is already running.", nil)}];
+        if (error) *error = [NSError errorWithDomain:@"com.hhwyz.imirror" code:1 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"The receiver is already running.", nil)}];
         return NO;
     }
     
@@ -144,7 +144,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
     if (!_raop) {
         [self _logMessage:@"Failed to initialize AirPlay receiver" level:LOGGER_ERR];
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:2 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t initialize the AirPlay receiver.", nil)}];
+        if (error) *error = [NSError errorWithDomain:@"com.hhwyz.imirror" code:2 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t initialize the AirPlay receiver.", nil)}];
         return NO;
     }
     
@@ -185,7 +185,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         raop_destroy(_raop);
         _raop = NULL;
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:3 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t start listening for AirPlay connections.", nil)}];
+        if (error) *error = [NSError errorWithDomain:@"com.hhwyz.imirror" code:3 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t start listening for AirPlay connections.", nil)}];
         return NO;
     }
     
@@ -203,7 +203,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         raop_destroy(_raop);
         _raop = NULL;
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:4 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t initialize Bonjour/AWDL advertising.", nil)}];
+        if (error) *error = [NSError errorWithDomain:@"com.hhwyz.imirror" code:4 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t initialize Bonjour/AWDL advertising.", nil)}];
         return NO;
     }
     
@@ -217,7 +217,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         raop_destroy(_raop);
         _raop = NULL;
         self.state = AirPlayBridgeStateFailed;
-        if (error) *error = [NSError errorWithDomain:@"com.erniu.imirror" code:5 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t configure the AirPlay receiver identity.", nil)}];
+        if (error) *error = [NSError errorWithDomain:@"com.hhwyz.imirror" code:5 userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Couldn’t configure the AirPlay receiver identity.", nil)}];
         return NO;
     }
     
@@ -241,7 +241,7 @@ static void _notify_disconnected(AirPlayReceiverBridge *bridge, uint64_t session
         self.state = AirPlayBridgeStateFailed;
         if (error) {
             NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Bonjour/AWDL service registration failed (RAOP=%d, AirPlay=%d).", nil), raop_reg, airplay_reg];
-            *error = [NSError errorWithDomain:@"com.erniu.imirror" code:6 userInfo:@{NSLocalizedDescriptionKey: message}];
+            *error = [NSError errorWithDomain:@"com.hhwyz.imirror" code:6 userInfo:@{NSLocalizedDescriptionKey: message}];
         }
         return NO;
     }

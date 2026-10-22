@@ -4,7 +4,9 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly PROJECT_DIR
-readonly BUNDLE_ID="com.erniu.imirror"
+readonly BUNDLE_ID="com.hhwyz.imirror"
+# 1.3.0 之前的包名，覆盖安装旧版时同样认作 iMirror。
+readonly LEGACY_BUNDLE_ID="com.erniu.imirror"
 readonly INSTALL_DIR="${IMIRROR_INSTALL_DIR:-/Applications}"
 readonly SOURCE_APP="$PROJECT_DIR/build/iMirror.app"
 readonly TARGET_APP="$INSTALL_DIR/iMirror.app"
@@ -36,7 +38,9 @@ bundle_id_of() {
     /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$1/Contents/Info.plist" 2>/dev/null || true
 }
 
-if [[ -e "$TARGET_APP" && "$(bundle_id_of "$TARGET_APP")" != "$BUNDLE_ID" ]]; then
+installed_bundle_id=""
+[[ -e "$TARGET_APP" ]] && installed_bundle_id="$(bundle_id_of "$TARGET_APP")"
+if [[ -e "$TARGET_APP" && "$installed_bundle_id" != "$BUNDLE_ID" && "$installed_bundle_id" != "$LEGACY_BUNDLE_ID" ]]; then
     printf '%s 不是 iMirror，为避免误删已停止安装。\n' "$TARGET_APP" >&2
     exit 1
 fi
@@ -44,7 +48,9 @@ fi
 # Replacing the bundle under a running process can crash it; ask it to quit first.
 if pgrep -x iMirror >/dev/null 2>&1; then
     printf '正在退出运行中的 iMirror…\n'
-    osascript -e "tell application id \"$BUNDLE_ID\" to quit" >/dev/null 2>&1 || true
+    for running_id in "$BUNDLE_ID" "$LEGACY_BUNDLE_ID"; do
+        osascript -e "tell application id \"$running_id\" to quit" >/dev/null 2>&1 || true
+    done
     for _ in 1 2 3 4 5 6 7 8 9 10; do
         pgrep -x iMirror >/dev/null 2>&1 || break
         sleep 0.5

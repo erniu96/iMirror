@@ -18,6 +18,7 @@ private struct UnitTests {
 
         testReceiverNameLimits()
         try testSettingsRecovery()
+        try testLegacySettingsMigration()
         testAnnexBParserEdges()
 
         let stream = Data([0, 0, 0, 1, 0x67, 0x01, 0, 0, 1, 0x68, 0x02])
@@ -100,6 +101,31 @@ private struct UnitTests {
         expect(store.alwaysOnTop, "首次使用默认置顶")
         store.alwaysOnTop = false
         expect(!SettingsStore(defaults: defaults).alwaysOnTop, "取消置顶的设置会持久保存")
+    }
+
+    private static func testLegacySettingsMigration() throws {
+        let suiteName = "iMirror.UnitTests.\(UUID().uuidString)"
+        let legacyName = "iMirror.UnitTests.Legacy.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suiteName),
+              let legacy = UserDefaults(suiteName: legacyName) else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        defer {
+            defaults.removePersistentDomain(forName: suiteName)
+            legacy.removePersistentDomain(forName: legacyName)
+        }
+        legacy.set("Study", forKey: "receiverName")
+        legacy.set("K7M3", forKey: "installationTag")
+        legacy.set(false, forKey: "playsAudio")
+        defaults.set(false, forKey: "alwaysOnTop")
+        legacy.set(true, forKey: "alwaysOnTop")
+
+        let store = SettingsStore(defaults: defaults)
+        store.migrateLegacySettings(from: legacy)
+        let migrated = store.loadConfiguration()
+        expect(migrated.baseName == "Study" && migrated.installationTag == "K7M3", "旧包名下的接收器名称和本机标记会迁移过来")
+        expect(!store.playsAudio, "旧包名下的声音设置会迁移过来")
+        expect(!store.alwaysOnTop, "迁移不会覆盖新包名下已有的设置")
     }
 
     private static func testVideoSessionIsolation() {

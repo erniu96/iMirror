@@ -41,6 +41,7 @@ final class AppModel: ObservableObject {
 
     init() {
         let settingsStore = SettingsStore()
+        settingsStore.migrateLegacySettings(from: UserDefaults(suiteName: SettingsStore.legacyDomain))
         let configuration = settingsStore.loadConfiguration()
         let receiverService = AirPlayReceiverService()
         let loginItemService = LoginItemService()

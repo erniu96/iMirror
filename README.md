@@ -92,7 +92,7 @@ Move the pointer over the picture to show the stop, pin and full-screen buttons.
 
 **"iMirror is damaged and can't be opened"**: run the `xattr` command above.
 
-**Uninstall**: turn off Open at Login in Settings and quit iMirror, then delete `/Applications/iMirror.app`. To also remove the receiver identity, paired devices and settings, delete `~/Library/Application Support/iMirror` and run `defaults delete com.erniu.imirror`.
+**Uninstall**: turn off Open at Login in Settings and quit iMirror, then delete `/Applications/iMirror.app`. To also remove the receiver identity, paired devices and settings, delete `~/Library/Application Support/iMirror` and run `defaults delete com.hhwyz.imirror`.
 
 ## Feedback and contributing
 

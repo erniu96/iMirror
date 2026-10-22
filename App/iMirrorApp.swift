@@ -23,7 +23,7 @@ struct iMirrorApp: App {
 }
 
 extension Notification.Name {
-    static let iMirrorReopenRequested = Notification.Name("com.erniu.imirror.reopen")
+    static let iMirrorReopenRequested = Notification.Name("com.hhwyz.imirror.reopen")
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {

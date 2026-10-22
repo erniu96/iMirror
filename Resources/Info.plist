@@ -18,7 +18,7 @@
 	<key>CFBundleExecutable</key>
 	<string>iMirror</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.erniu.imirror</string>
+	<string>com.hhwyz.imirror</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

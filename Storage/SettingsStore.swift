@@ -7,12 +7,26 @@ final class SettingsStore {
         static let alwaysOnTop = "alwaysOnTop"
         static let playsAudio = "playsAudio"
         static let hasCompletedOnboarding = "hasCompletedOnboarding"
+        static let all = [receiverName, installationTag, alwaysOnTop, playsAudio, hasCompletedOnboarding]
     }
+
+    /// 1.3.0 之前的包名，设置保存在这个偏好域里。
+    static let legacyDomain = "com.erniu.imirror"
 
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+    }
+
+    /// 把旧包名下的设置复制过来（只补当前缺少的项），保持接收器名称和本机标记不变。
+    func migrateLegacySettings(from legacy: UserDefaults?) {
+        guard let legacy else { return }
+        for key in Key.all where defaults.object(forKey: key) == nil {
+            if let value = legacy.object(forKey: key) {
+                defaults.set(value, forKey: key)
+            }
+        }
     }
 
     func loadConfiguration() -> ReceiverConfiguration {

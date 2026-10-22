@@ -92,7 +92,7 @@
 
 **提示“iMirror 已损坏，无法打开”**：运行上面的 `xattr` 命令。
 
-**卸载**：在设置中关闭“登录时启动”并退出 iMirror，然后删除 `/Applications/iMirror.app`。如需同时清除接收器身份、已配对设备和设置，删除 `~/Library/Application Support/iMirror` 并运行 `defaults delete com.erniu.imirror`。
+**卸载**：在设置中关闭“登录时启动”并退出 iMirror，然后删除 `/Applications/iMirror.app`。如需同时清除接收器身份、已配对设备和设置，删除 `~/Library/Application Support/iMirror` 并运行 `defaults delete com.hhwyz.imirror`。
 
 ## 反馈与贡献
 

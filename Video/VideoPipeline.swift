@@ -13,7 +13,7 @@ final class VideoPipeline: VideoDataSink {
     var onError: ((String) -> Void)?
 
     private let decoder: H264Decoder
-    private let queue = DispatchQueue(label: "com.erniu.imirror.video-decode", qos: .userInteractive)
+    private let queue = DispatchQueue(label: "com.hhwyz.imirror.video-decode", qos: .userInteractive)
     private let deliveryLock = NSLock()
     private var hasDeliveredFrame = false
     private var pendingFrame: Frame?

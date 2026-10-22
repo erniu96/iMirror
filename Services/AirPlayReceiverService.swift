@@ -12,7 +12,7 @@ final class AirPlayReceiverService: NSObject {
 
     var onEvent: ((Event) -> Void)?
 
-    private let lifecycleQueue = DispatchQueue(label: "com.erniu.imirror.receiver-lifecycle", qos: .userInitiated)
+    private let lifecycleQueue = DispatchQueue(label: "com.hhwyz.imirror.receiver-lifecycle", qos: .userInitiated)
     private let sinkLock = NSLock()
     private let stateLock = NSLock()
     private var videoSink: ((UInt64, Data) -> Void)?

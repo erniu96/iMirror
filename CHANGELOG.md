@@ -15,6 +15,11 @@ Each release page includes the matching section below. Before tagging a release,
 - 发布包使用固定的自签名证书签名，更新后 macOS 不会再次询问本地网络权限。
   Builds are signed with a fixed self-signed certificate, so macOS keeps the Local Network permission after an update.
 
+### 变更 / Changed
+
+- 包名（Bundle ID）由 `com.erniu.imirror` 改为 `com.hhwyz.imirror`。接收器名称、本机标记和其他设置会自动迁移，已配对设备不受影响；升级后 macOS 会再询问一次本地网络权限，“登录时启动”如显示关闭请重新打开。
+  The bundle identifier changed from `com.erniu.imirror` to `com.hhwyz.imirror`. The receiver name, per-Mac tag and other settings are migrated automatically and paired devices are kept; after updating, macOS asks for Local Network access once more, and Open at Login may need to be turned on again.
+
 ### 改进 / Improved
 
 按 Apple 人机交互指南（HIG）逐项检查并调整：

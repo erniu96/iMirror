@@ -32,7 +32,7 @@ final class AudioPlaybackEngine {
     var onError: ((String) -> Void)?
 
     private let engine = AVAudioEngine()
-    private let queue = DispatchQueue(label: "com.erniu.imirror.audio", qos: .userInteractive)
+    private let queue = DispatchQueue(label: "com.hhwyz.imirror.audio", qos: .userInteractive)
     private var streams: [UInt64: Stream] = [:]
     private var pendingGains: [UInt64: Float] = [:]
     private var configurationObserver: NSObjectProtocol?
