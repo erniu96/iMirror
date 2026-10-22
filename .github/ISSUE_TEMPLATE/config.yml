@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 帮忙翻译 / Help translate iMirror
+    url: https://github.com/erniu96/iMirror/blob/main/Documentation/LOCALIZATION.md
+    about: 添加或改进界面翻译 / Add or improve an interface translation
